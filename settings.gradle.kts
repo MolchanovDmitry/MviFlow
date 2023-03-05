@@ -14,7 +14,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "FlowMvi"
+include(":mviKotlinApp")
 include(":androidApp")
+
 include(":common:database")
 include(":common:domain")
 include(":common:presentation")

@@ -1,16 +1,15 @@
 plugins {
     id("com.android.application")
-    id("kotlin-parcelize")
     kotlin("android")
 }
 
 android {
     namespace = "dmitry.molchanov.flowmvi.android"
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "dmitry.molchanov.flowmvi.android"
         minSdk = 28
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
