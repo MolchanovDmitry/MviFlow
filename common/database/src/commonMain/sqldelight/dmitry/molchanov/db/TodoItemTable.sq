@@ -1,0 +1,21 @@
+CREATE TABLE TodoItemTable(
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL,
+    isDone INTEGER AS Boolean NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM TodoItemTable;
+
+insert:
+INSERT INTO TodoItemTable(text, isDone)
+VALUES (?,?);
+
+update:
+INSERT OR REPLACE INTO TodoItemTable(id, text, isDone)
+VALUES (?,?,?);
+
+delete:
+DELETE FROM TodoItemTable
+WHERE id = ?;
