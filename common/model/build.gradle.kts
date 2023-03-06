@@ -1,15 +1,6 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.squareup.sqldelight")
-}
-
-sqldelight {
-    database("AppDatabase") {
-        packageName = "dmitry.molchanov.database"
-        sourceFolders = listOf("sqldelight")
-    }
-    linkSqlite = true
 }
 
 kotlin {
@@ -21,20 +12,14 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "database"
+            baseName = "module"
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                arrayOf(
-                    project(Modules.Domain),
-                    project(Modules.Model),
-                    Deps.Koin.core,
-                    Deps.Sqldelight.runtime,
-                    Deps.Sqldelight.coroutinesExt,
-                ).forEach(::implementation)
+                implementation(Deps.Coroutines.core)
             }
         }
         val commonTest by getting {
@@ -42,11 +27,7 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting{
-            dependencies {
-                implementation(Deps.Sqldelight.android_driver)
-            }
-        }
+        val androidMain by getting
         val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -70,7 +51,7 @@ kotlin {
 }
 
 android {
-    namespace = "dmitry.molchanov.database"
+    namespace = "dmitry.molchanov.module"
     compileSdk = 32
     defaultConfig {
         minSdk = 28

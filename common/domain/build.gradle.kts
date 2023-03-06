@@ -23,6 +23,7 @@ kotlin {
                     Deps.Koin.core,
                     Deps.Coroutines.core
                 ).forEach(::implementation)
+                api(project(Modules.Model))
             }
         }
         val commonTest by getting {

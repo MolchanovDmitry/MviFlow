@@ -26,7 +26,9 @@ android {
 dependencies {
 
     arrayOf(
-        project(Modules.Database)
+        project(Modules.Model),
+        project(Modules.Database),
+        Deps.Koin.android
     ).forEach(::implementation)
 
 

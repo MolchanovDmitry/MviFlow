@@ -1,6 +1,5 @@
 package dmitry.molchanov.mvi_kotlin_app.domain.main
 
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.domain.main.MainView.Event
 import dmitry.molchanov.mvi_kotlin_app.domain.main.MainView.Model
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore
@@ -9,17 +8,12 @@ import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
 internal val statesToModel: (ListStore.State, AddStore.State) -> Model =
     { listState, addState ->
         Model(
-            items = listState.items.map(TodoItem::toModelItem),
+            items = listState.items.map {
+                Model.Item(id = it.id, text = it.text, isDone = it.isDone)
+            },
             text = addState.text,
         )
     }
-
-private fun TodoItem.toModelItem(): Model.Item =
-    Model.Item(
-        id = id,
-        text = data.text,
-        isDone = data.isDone,
-    )
 
 internal val addLabelToListIntent: (AddStore.Label) -> ListStore.Intent? =
     { label ->

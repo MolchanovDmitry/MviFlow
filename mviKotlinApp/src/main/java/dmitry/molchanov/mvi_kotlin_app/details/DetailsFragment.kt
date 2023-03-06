@@ -6,18 +6,18 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.R
 import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.domain.details.DetailsController
+import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore
+import dmitry.molchanov.mvi_kotlin_app.inject
 import kotlinx.parcelize.Parcelize
+import org.koin.core.parameter.parametersOf
 
 class DetailsFragment(
-    private val storeFactory: StoreFactory,
-    private val dispatchers: TodoDispatchers,
-    private val onItemChanged: (id: String, data: TodoItem.Data) -> Unit,
-    private val onItemDeleted: (id: String) -> Unit,
+    private val onItemChanged: (todoItem: TodoItem) -> Unit,
+    private val onItemDeleted: (id: Long) -> Unit,
 ) : Fragment(R.layout.todo_details) {
 
     private lateinit var controller: DetailsController
@@ -32,12 +32,11 @@ class DetailsFragment(
 
         controller =
             DetailsController(
-                storeFactory = storeFactory,
                 lifecycle = essentyLifecycle(),
-                dispatchers = dispatchers,
-                itemId = args.itemId,
+                dispatchers = inject<TodoDispatchers>().value,
                 onItemChanged = onItemChanged,
                 onItemDeleted = onItemDeleted,
+                detailsStore = inject<DetailsStore> { parametersOf(args.itemId) }.value,
             )
     }
 
@@ -47,7 +46,7 @@ class DetailsFragment(
         controller.onViewCreated(DetailsViewImpl(view), viewLifecycleOwner.essentyLifecycle())
     }
 
-    fun setArguments(itemId: String): DetailsFragment {
+    fun setArguments(itemId: Long): DetailsFragment {
         arguments = bundleOf(KEY_ARGUMENTS to Arguments(itemId = itemId))
 
         return this
@@ -58,5 +57,5 @@ class DetailsFragment(
     }
 
     @Parcelize
-    private class Arguments(val itemId: String) : Parcelable
+    private class Arguments(val itemId: Long) : Parcelable
 }

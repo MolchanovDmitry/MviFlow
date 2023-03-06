@@ -5,15 +5,15 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
-import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import dmitry.molchanov.mvi_kotlin_app.R
 import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.domain.main.MainController
+import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore
+import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
+import org.koin.android.ext.android.inject
 
 class MainFragment(
-    private val storeFactory: StoreFactory,
-    private val dispatchers: TodoDispatchers,
     private val onItemSelected: (id: String) -> Unit,
 ) : Fragment(R.layout.todo_list) {
 
@@ -24,11 +24,11 @@ class MainFragment(
 
         controller =
             MainController(
-                storeFactory = storeFactory,
                 lifecycle = essentyLifecycle(),
-                instanceKeeper = instanceKeeper(),
-                dispatchers = dispatchers,
-                onItemSelected = onItemSelected
+                onItemSelected = onItemSelected,
+                dispatchers = inject<TodoDispatchers>().value,
+                listStore = inject<ListStore>().value,
+                addStore = instanceKeeper().getStore{inject<AddStore>().value}
             )
     }
 
@@ -38,11 +38,11 @@ class MainFragment(
         controller.onViewCreated(MainViewImpl(view), viewLifecycleOwner.essentyLifecycle())
     }
 
-    fun onItemChanged(id: String, data: TodoItem.Data) {
-        controller.onItemChanged(id = id, data = data)
+    fun onItemChanged(id: Long, text: String, isDone: Boolean) {
+        controller.onItemChanged(id = id, text, isDone)
     }
 
-    fun onItemDeleted(id: String) {
+    fun onItemDeleted(id: Long) {
         controller.onItemDeleted(id = id)
     }
 }

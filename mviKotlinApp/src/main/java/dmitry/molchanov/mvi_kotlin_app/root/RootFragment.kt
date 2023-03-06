@@ -3,17 +3,12 @@ package dmitry.molchanov.mvi_kotlin_app.root
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dmitry.molchanov.mvi_kotlin_app.OnBackPressedHandler
 import dmitry.molchanov.mvi_kotlin_app.R
 import dmitry.molchanov.mvi_kotlin_app.details.DetailsFragment
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.main.MainFragment
 
-class RootFragment(
-    private val storeFactory: StoreFactory,
-    private val dispatchers: TodoDispatchers,
-) : Fragment(R.layout.content), OnBackPressedHandler {
+class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
 
     private val fragmentFactory = FragmentFactoryImpl()
 
@@ -63,17 +58,10 @@ class RootFragment(
                 else -> super.instantiate(classLoader, className)
             }
 
-        fun mainFragment(): MainFragment =
-            MainFragment(
-                storeFactory = storeFactory,
-                dispatchers = dispatchers,
-                onItemSelected = ::openDetails,
-            )
+        fun mainFragment(): MainFragment = MainFragment(onItemSelected = ::openDetails)
 
         fun detailsFragment(): DetailsFragment =
             DetailsFragment(
-                storeFactory = storeFactory,
-                dispatchers = dispatchers,
                 onItemChanged = { id, data -> findMainFragment()?.onItemChanged(id = id, data = data) },
                 onItemDeleted = { id ->
                     findMainFragment()?.onItemDeleted(id = id)

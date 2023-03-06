@@ -2,10 +2,10 @@ package dmitry.molchanov.database
 
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import dmitry.molchanov.TodoItemDataStore
 import dmitry.molchanov.db.TodoItemTable
 import dmitry.molchanov.db.TodoItemTableQueries
 import dmitry.molchanov.model.TodoItem
+import dmitry.molchanov.model.TodoItemDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

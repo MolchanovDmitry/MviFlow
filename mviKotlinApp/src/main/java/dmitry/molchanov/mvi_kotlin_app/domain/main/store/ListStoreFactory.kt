@@ -6,10 +6,11 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoItem
+import dmitry.molchanov.model.TodoItem
+import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.State
-import dmitry.molchanov.mvi_kotlin_app.domain.update
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -18,6 +19,7 @@ internal class ListStoreFactory(
     private val storeFactory: StoreFactory,
     private val mainContext: CoroutineContext,
     private val ioContext: CoroutineContext,
+    private val dataStore: TodoItemDataStore
 ) {
 
     fun create(): ListStore =
@@ -32,10 +34,10 @@ internal class ListStoreFactory(
     // Serializable only for exporting events in Time Travel, no need otherwise.
     private sealed interface Msg : JvmSerializable {
         data class Loaded(val items: List<TodoItem>) : Msg
-        data class Deleted(val id: String) : Msg
-        data class DoneToggled(val id: String) : Msg
+        data class Deleted(val id: Long) : Msg
+        data class DoneToggled(val id: Long) : Msg
         data class Added(val item: TodoItem) : Msg
-        data class Changed(val id: String, val data: TodoItem.Data) : Msg
+        data class Changed(val item: TodoItem) : Msg
     }
 
     private inner class ExecutorImpl :
@@ -43,9 +45,9 @@ internal class ListStoreFactory(
         override fun executeAction(action: Unit, getState: () -> State) {
             scope.launch {
                 val items = withContext(ioContext) {
-                    //database.getAll() TODO
+                    dataStore.todoItemsFlow.single()
                 }
-                //dispatch(Msg.Loaded(items))
+                dispatch(Msg.Loaded(items))
             }
         }
 
@@ -55,25 +57,25 @@ internal class ListStoreFactory(
                 is Intent.ToggleDone -> toggleDone(intent.id, getState)
                 is Intent.AddToState -> dispatch(Msg.Added(intent.item))
                 is Intent.DeleteFromState -> dispatch(Msg.Deleted(intent.id))
-                is Intent.UpdateInState -> dispatch(Msg.Changed(intent.id, intent.data))
+                is Intent.UpdateInState -> dispatch(Msg.Changed(intent.todoItem))
             }.let {}
         }
 
-        private fun delete(id: String) {
+        private fun delete(id: Long) {
             dispatch(Msg.Deleted(id))
 
             scope.launch(ioContext) {
-                //database.delete(id)
+                dataStore.removeItem(id)
             }
         }
 
-        private fun toggleDone(id: String, state: () -> State) {
+        private fun toggleDone(id: Long, state: () -> State) {
             dispatch(Msg.DoneToggled(id))
 
             val item = state().items.find { it.id == id } ?: return
 
             scope.launch(ioContext) {
-                //database.save(id, item.data)
+                dataStore.addItem(item.text)
             }
         }
     }

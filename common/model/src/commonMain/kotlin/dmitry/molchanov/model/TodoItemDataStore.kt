@@ -1,6 +1,5 @@
-package dmitry.molchanov
+package dmitry.molchanov.model
 
-import dmitry.molchanov.model.TodoItem
 import kotlinx.coroutines.flow.Flow
 
 interface TodoItemDataStore {

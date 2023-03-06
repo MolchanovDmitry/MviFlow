@@ -1,48 +1,26 @@
 package dmitry.molchanov.mvi_kotlin_app.domain.main
 
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.instancekeeper.getStore
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.bind
 import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
+import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.domain.main.MainView.Event
-import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStoreFactory
+import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
-import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStoreFactory
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 
 class MainController(
-    private val storeFactory: StoreFactory,
     lifecycle: Lifecycle,
-    instanceKeeper: InstanceKeeper,
     private val dispatchers: TodoDispatchers,
-    private val onItemSelected: (id: String) -> Unit,
+    private val listStore: ListStore,
+    private val addStore: AddStore,
+    private val onItemSelected: (id: Long) -> Unit,
 ) {
-
-    private val listStore =
-        instanceKeeper.getStore {
-            ListStoreFactory(
-                storeFactory = storeFactory,
-                mainContext = dispatchers.main,
-                ioContext = dispatchers.io,
-            ).create()
-        }
-
-    private val addStore =
-        instanceKeeper.getStore {
-            AddStoreFactory(
-                storeFactory = storeFactory,
-                mainContext = dispatchers.main,
-                ioContext = dispatchers.io,
-            ).create()
-        }
 
     init {
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY, dispatchers.unconfined) {
@@ -72,11 +50,19 @@ class MainController(
         }.let {}
     }
 
-    fun onItemChanged(id: String, data: TodoItem.Data) {
-        listStore.accept(ListStore.Intent.UpdateInState(id = id, data = data))
+    fun onItemChanged(id: Long, text: String, isDone: Boolean) {
+        listStore.accept(
+            ListStore.Intent.UpdateInState(
+                todoItem = TodoItem(
+                    id = id,
+                    text = text,
+                    isDone = isDone
+                )
+            )
+        )
     }
 
-    fun onItemDeleted(id: String) {
+    fun onItemDeleted(id: Long) {
         listStore.accept(ListStore.Intent.DeleteFromState(id = id))
     }
 }

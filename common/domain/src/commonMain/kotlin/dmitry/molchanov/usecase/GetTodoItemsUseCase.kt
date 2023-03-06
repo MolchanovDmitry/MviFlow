@@ -1,7 +1,7 @@
 package dmitry.molchanov.usecase
 
-import dmitry.molchanov.TodoItemDataStore
 import dmitry.molchanov.model.TodoItem
+import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.util.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn

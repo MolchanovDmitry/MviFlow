@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import dmitry.molchanov.mvi_kotlin_app.domain.DefaultDispatchers
 import dmitry.molchanov.mvi_kotlin_app.root.RootFragment
 
 class MainActivity : AppCompatActivity() {
@@ -41,10 +40,6 @@ class MainActivity : AppCompatActivity() {
                 else -> super.instantiate(classLoader, className)
             }
 
-        fun rootFragment(): RootFragment =
-            RootFragment(
-                storeFactory = storeFactoryInstance,
-                dispatchers = DefaultDispatchers,
-            )
+        fun rootFragment(): RootFragment = RootFragment()
     }
 }

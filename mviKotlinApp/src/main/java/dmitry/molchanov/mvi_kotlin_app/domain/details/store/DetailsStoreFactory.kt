@@ -7,10 +7,12 @@ import com.arkivanov.mvikotlin.core.utils.ExperimentalMviKotlinApi
 import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutorScope
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoItem
+import dmitry.molchanov.model.TodoItem
+import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Label
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.State
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -20,7 +22,8 @@ internal class DetailsStoreFactory(
     private val storeFactory: StoreFactory,
     private val mainContext: CoroutineContext,
     private val ioContext: CoroutineContext,
-    private val itemId: String,
+    private val dataStore: TodoItemDataStore,
+    private val itemId: Long,
 ) {
 
     fun create(): DetailsStore =
@@ -33,11 +36,9 @@ internal class DetailsStoreFactory(
                     onAction<Unit> {
                         launch {
                             val item: TodoItem? = withContext(ioContext) {
-                                //database.get(itemId) TODO
-                                TodoItem(id = "", data = TodoItem.Data(text = "", isDone = false))
-
+                                dataStore.todoItemsFlow.single().find { it.id == itemId }
                             }
-                            dispatch(item?.data?.let(Msg::Loaded) ?: Msg.Finished)
+                            dispatch(item?.let(Msg::Loaded) ?: Msg.Finished)
                         }
                     }
 
@@ -64,10 +65,10 @@ internal class DetailsStoreFactory(
                 },
                 reducer = { msg ->
                     when (msg) {
-                        is Msg.Loaded -> copy(data = msg.data)
+                        is Msg.Loaded -> copy(todoItem = msg.todoItem)
                         is Msg.Finished -> copy(isFinished = true)
-                        is Msg.TextChanged -> copy(data = data?.copy(text = msg.text))
-                        is Msg.DoneToggled -> copy(data = data?.copy(isDone = !data.isDone))
+                        is Msg.TextChanged -> copy(todoItem = todoItem?.copy(text = msg.text))
+                        is Msg.DoneToggled -> copy(todoItem = todoItem?.copy(isDone = !todoItem.isDone))
                     }
                 },
             ) {}
@@ -75,18 +76,19 @@ internal class DetailsStoreFactory(
 
     // Serializable only for exporting events in Time Travel, no need otherwise.
     private sealed class Msg : JvmSerializable {
-        data class Loaded(val data: TodoItem.Data) : Msg()
+        data class Loaded(val todoItem: TodoItem) : Msg()
         object Finished : Msg()
         data class TextChanged(val text: String) : Msg()
         object DoneToggled : Msg()
     }
 
     private fun CoroutineExecutorScope<State, Msg, Label>.save() {
-        val data = state.data ?: return
-        publish(Label.Changed(itemId, data))
+        val item = state.todoItem ?: return
+        item.let(Label::Changed)
+            .let(::publish)
 
         launch(ioContext) {
-            //database.save(itemId, data)
+            dataStore.addItem(text = item.text)
         }
     }
 }

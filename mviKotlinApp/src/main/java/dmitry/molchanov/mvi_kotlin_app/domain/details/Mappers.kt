@@ -8,8 +8,8 @@ import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.State
 internal val stateToModel: (State) -> Model =
     { state ->
         Model(
-            text = state.data?.text ?: "",
-            isDone = state.data?.isDone ?: false,
+            text = state.todoItem?.text ?: "",
+            isDone = state.todoItem?.isDone ?: false,
         )
     }
 
