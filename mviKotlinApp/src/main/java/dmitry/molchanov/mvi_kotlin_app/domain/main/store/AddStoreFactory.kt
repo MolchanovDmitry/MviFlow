@@ -24,7 +24,7 @@ internal class AddStoreFactory(
         object : AddStore, Store<Intent, State, Label> by storeFactory.create(
             name = "TodoAddStore",
             initialState = State(),
-            executorFactory =(::ExecutorImpl),
+            executorFactory = (::ExecutorImpl),
             reducer = ReducerImpl,
         ) {}
 

@@ -11,6 +11,7 @@ import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.State
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
@@ -46,7 +47,8 @@ internal class ListStoreFactory(
         CoroutineExecutor<Intent, Unit, State, Msg, Nothing>(mainContext) {
         override fun executeAction(action: Unit, getState: () -> State) {
             dataStore.todoItemsFlow
-                .onEach { dispatch(Msg.Loaded(it)) }
+                .map(Msg::Loaded)
+                .onEach(::dispatch)
                 .launchIn(scope)
         }
 
@@ -69,7 +71,7 @@ internal class ListStoreFactory(
         }
 
         private fun toggleDone(id: Long, state: () -> State) {
-            dispatch(Msg.DoneToggled(id))
+            //dispatch(Msg.DoneToggled(id))
 
             val item = state().items.find { it.id == id } ?: return
 

@@ -12,6 +12,7 @@ import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Label
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.State
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,10 +36,18 @@ internal class DetailsStoreFactory(
                 executorFactory = coroutineExecutorFactory(mainContext) {
                     onAction<Unit> {
                         launch {
-                            val item: TodoItem? = withContext(ioContext) {
-                                dataStore.todoItemsFlow.single().find { it.id == itemId }
+                            withContext(ioContext) {
+                                dataStore.todoItemsFlow.firstOrNull { items ->
+                                    val item = items.find { todoItem ->
+                                        todoItem.id == itemId
+                                    }
+                                    val event = item?.let(Msg::Loaded) ?: Msg.Finished
+                                    withContext(mainContext) {
+                                        dispatch(event)
+                                    }
+                                    true
+                                }
                             }
-                            dispatch(item?.let(Msg::Loaded) ?: Msg.Finished)
                         }
                     }
 
@@ -57,7 +66,7 @@ internal class DetailsStoreFactory(
 
                         launch {
                             withContext(ioContext) {
-                                //database.delete(itemId)
+                                dataStore.removeItem(itemId)
                             }
                             dispatch(Msg.Finished)
                         }
@@ -88,7 +97,7 @@ internal class DetailsStoreFactory(
             .let(::publish)
 
         launch(ioContext) {
-            dataStore.addItem(text = item.text)
+            dataStore.updateItem(item)
         }
     }
 }
