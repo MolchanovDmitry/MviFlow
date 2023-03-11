@@ -33,7 +33,7 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
             false
         }
 
-    private fun openDetails(itemId: String) {
+    private fun openDetails(itemId: Long) {
         childFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_fade_in_bottom, R.anim.scale_fade_out, R.anim.scale_fade_in, R.anim.slide_fade_out_bottom)
@@ -62,7 +62,11 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
 
         fun detailsFragment(): DetailsFragment =
             DetailsFragment(
-                onItemChanged = { id, data -> findMainFragment()?.onItemChanged(id = id, data = data) },
+                onItemChanged = { item -> findMainFragment()?.onItemChanged(
+                    id = item.id,
+                    text = item.text,
+                    isDone = item.isDone
+                ) },
                 onItemDeleted = { id ->
                     findMainFragment()?.onItemDeleted(id = id)
                     childFragmentManager.popBackStack()

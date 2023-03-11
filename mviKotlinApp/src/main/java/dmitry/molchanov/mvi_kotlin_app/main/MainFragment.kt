@@ -14,7 +14,7 @@ import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
 import org.koin.android.ext.android.inject
 
 class MainFragment(
-    private val onItemSelected: (id: String) -> Unit,
+    private val onItemSelected: (id: Long) -> Unit,
 ) : Fragment(R.layout.todo_list) {
 
     private lateinit var controller: MainController
@@ -28,7 +28,7 @@ class MainFragment(
                 onItemSelected = onItemSelected,
                 dispatchers = inject<TodoDispatchers>().value,
                 listStore = inject<ListStore>().value,
-                addStore = instanceKeeper().getStore{inject<AddStore>().value}
+                addStore = instanceKeeper().getStore { inject<AddStore>().value }
             )
     }
 

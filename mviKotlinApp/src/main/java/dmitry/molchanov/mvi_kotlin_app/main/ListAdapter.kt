@@ -14,9 +14,9 @@ import dmitry.molchanov.mvi_kotlin_app.getViewById
 import kotlin.properties.Delegates.observable
 
 class ListAdapter(
-    private val onItemClick: (id: String) -> Unit,
-    private val onItemDoneClick: (id: String) -> Unit,
-    private val onItemDeleteClick: (id: String) -> Unit,
+    private val onItemClick: (id: Long) -> Unit,
+    private val onItemDoneClick: (id: Long) -> Unit,
+    private val onItemDeleteClick: (id: Long) -> Unit,
 ) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     var items: List<Item> by observable(emptyList()) { _, old, new -> diff(old, new, this) }

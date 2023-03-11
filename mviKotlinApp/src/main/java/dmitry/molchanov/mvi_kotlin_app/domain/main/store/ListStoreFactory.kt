@@ -10,6 +10,8 @@ import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.State
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,12 +45,9 @@ internal class ListStoreFactory(
     private inner class ExecutorImpl :
         CoroutineExecutor<Intent, Unit, State, Msg, Nothing>(mainContext) {
         override fun executeAction(action: Unit, getState: () -> State) {
-            scope.launch {
-                val items = withContext(ioContext) {
-                    dataStore.todoItemsFlow.single()
-                }
-                dispatch(Msg.Loaded(items))
-            }
+            dataStore.todoItemsFlow
+                .onEach { dispatch(Msg.Loaded(it)) }
+                .launchIn(scope)
         }
 
         override fun executeIntent(intent: Intent, getState: () -> State) {
@@ -75,7 +74,7 @@ internal class ListStoreFactory(
             val item = state().items.find { it.id == id } ?: return
 
             scope.launch(ioContext) {
-                dataStore.addItem(item.text)
+                dataStore.updateItem(item)
             }
         }
     }
@@ -85,9 +84,9 @@ internal class ListStoreFactory(
             when (msg) {
                 is Msg.Loaded -> copy(items = msg.items)
                 is Msg.Deleted -> copy(items = items.filterNot { it.id == msg.id })
-                is Msg.DoneToggled -> copy(items = items.update(msg.id) { copy(isDone = !isDone) })
-                is Msg.Added -> copy(items = items + msg.item)
-                is Msg.Changed -> copy(items = items.update(msg.id) { msg.data })
+                is Msg.DoneToggled -> copy(items = items)
+                is Msg.Added -> copy(items = items + msg.item) // TODO
+                is Msg.Changed -> copy(items = items) // TODO
             }
     }
 }
