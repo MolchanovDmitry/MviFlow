@@ -73,7 +73,7 @@ android {
     namespace = "dmitry.molchanov.database"
     compileSdk = 32
     defaultConfig {
-        minSdk = 28
+        minSdk = 23
         targetSdk = 32
     }
 }

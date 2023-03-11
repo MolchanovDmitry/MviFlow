@@ -58,7 +58,7 @@ android {
     namespace = "dmitry.molchanov.model"
     compileSdk = 32
     defaultConfig {
-        minSdk = 28
+        minSdk = 23
         targetSdk = 32
     }
 }
