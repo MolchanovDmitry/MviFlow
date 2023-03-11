@@ -5,19 +5,17 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore.Label
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore.State
+import dmitry.molchanov.usecase.AddTodoItemUseCase
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 internal class AddStoreFactory(
     private val storeFactory: StoreFactory,
     private val mainContext: CoroutineContext,
-    private val ioContext: CoroutineContext,
-    private val dataStore: TodoItemDataStore,
+    private val addTodoItemUseCase: AddTodoItemUseCase
 ) {
 
     fun create(): AddStore =
@@ -48,9 +46,7 @@ internal class AddStoreFactory(
             dispatch(Msg.TextChanged(""))
 
             scope.launch {
-                withContext(ioContext) {
-                    dataStore.addItem(text)
-                }
+                addTodoItemUseCase.execute(text)
             }
         }
     }

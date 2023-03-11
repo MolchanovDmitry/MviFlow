@@ -8,12 +8,13 @@ import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutorScope
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Label
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.State
+import dmitry.molchanov.usecase.EditTodoItemUseCase
+import dmitry.molchanov.usecase.GetTodoItemsUseCase
+import dmitry.molchanov.usecase.RemoveTodoItemUseCase
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -22,9 +23,10 @@ import kotlin.coroutines.CoroutineContext
 internal class DetailsStoreFactory(
     private val storeFactory: StoreFactory,
     private val mainContext: CoroutineContext,
-    private val ioContext: CoroutineContext,
-    private val dataStore: TodoItemDataStore,
     private val itemId: Long,
+    private val editTodoItemUseCase: EditTodoItemUseCase,
+    private val getTodoItemsUseCase: GetTodoItemsUseCase,
+    private val removeTodoItemUseCase: RemoveTodoItemUseCase,
 ) {
 
     fun create(): DetailsStore =
@@ -36,17 +38,15 @@ internal class DetailsStoreFactory(
                 executorFactory = coroutineExecutorFactory(mainContext) {
                     onAction<Unit> {
                         launch {
-                            withContext(ioContext) {
-                                dataStore.todoItemsFlow.firstOrNull { items ->
-                                    val item = items.find { todoItem ->
-                                        todoItem.id == itemId
-                                    }
-                                    val event = item?.let(Msg::Loaded) ?: Msg.Finished
-                                    withContext(mainContext) {
-                                        dispatch(event)
-                                    }
-                                    true
+                            getTodoItemsUseCase.execute().firstOrNull { items ->
+                                val item = items.find { todoItem ->
+                                    todoItem.id == itemId
                                 }
+                                val event = item?.let(Msg::Loaded) ?: Msg.Finished
+                                withContext(mainContext) {
+                                    dispatch(event)
+                                }
+                                true
                             }
                         }
                     }
@@ -65,9 +65,7 @@ internal class DetailsStoreFactory(
                         publish(Label.Deleted(itemId))
 
                         launch {
-                            withContext(ioContext) {
-                                dataStore.removeItem(itemId)
-                            }
+                            removeTodoItemUseCase.execute(itemId)
                             dispatch(Msg.Finished)
                         }
                     }
@@ -96,8 +94,8 @@ internal class DetailsStoreFactory(
         item.let(Label::Changed)
             .let(::publish)
 
-        launch(ioContext) {
-            dataStore.updateItem(item)
+        launch {
+            editTodoItemUseCase.execute(item)
         }
     }
 }

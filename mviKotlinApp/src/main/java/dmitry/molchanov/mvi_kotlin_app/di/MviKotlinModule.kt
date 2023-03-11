@@ -1,7 +1,6 @@
 package dmitry.molchanov.mvi_kotlin_app.di
 
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.DefaultDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStoreFactory
@@ -25,27 +24,30 @@ val mviKotlinModule = module {
         DetailsStoreFactory(
             storeFactory = get(),
             mainContext = get<TodoDispatchers>().main,
-            ioContext = get<TodoDispatchers>().io,
-            dataStore = get(),
-            itemId = params.get()
-        ).create()
+            itemId = params.get(),
+            editTodoItemUseCase = get(),
+            getTodoItemsUseCase = get(),
+            removeTodoItemUseCase = get(),
+
+            ).create()
     }
 
     factory {
         ListStoreFactory(
             storeFactory = get(),
             mainContext = get<TodoDispatchers>().main,
-            ioContext = get<TodoDispatchers>().io,
-            dataStore = get()
-        ).create()
+            getTodoItemsUseCase = get(),
+            editTodoItemUseCase = get(),
+            removeTodoItemUseCase = get(),
+
+            ).create()
     }
 
     factory {
         AddStoreFactory(
             storeFactory = get(),
             mainContext = get<TodoDispatchers>().main,
-            ioContext = get<TodoDispatchers>().io,
-            dataStore = get()
+            addTodoItemUseCase = get(),
         ).create()
     }
 
@@ -53,9 +55,10 @@ val mviKotlinModule = module {
         ListStoreFactory(
             storeFactory = get(),
             mainContext = get<TodoDispatchers>().main,
-            ioContext = get<TodoDispatchers>().io,
-            dataStore = get()
-        ).create()
+            getTodoItemsUseCase = get(),
+            editTodoItemUseCase = get(),
+            removeTodoItemUseCase = get(),
+            ).create()
     }
 
     factory { storeFactoryInstance }

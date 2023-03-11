@@ -7,22 +7,23 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.model.TodoItemDataStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.Intent
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore.State
+import dmitry.molchanov.usecase.EditTodoItemUseCase
+import dmitry.molchanov.usecase.GetTodoItemsUseCase
+import dmitry.molchanov.usecase.RemoveTodoItemUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 internal class ListStoreFactory(
     private val storeFactory: StoreFactory,
     private val mainContext: CoroutineContext,
-    private val ioContext: CoroutineContext,
-    private val dataStore: TodoItemDataStore
+    private val getTodoItemsUseCase: GetTodoItemsUseCase,
+    private val editTodoItemUseCase: EditTodoItemUseCase,
+    private val removeTodoItemUseCase: RemoveTodoItemUseCase,
 ) {
 
     fun create(): ListStore =
@@ -46,7 +47,7 @@ internal class ListStoreFactory(
     private inner class ExecutorImpl :
         CoroutineExecutor<Intent, Unit, State, Msg, Nothing>(mainContext) {
         override fun executeAction(action: Unit, getState: () -> State) {
-            dataStore.todoItemsFlow
+            getTodoItemsUseCase.execute()
                 .map(Msg::Loaded)
                 .onEach(::dispatch)
                 .launchIn(scope)
@@ -65,8 +66,8 @@ internal class ListStoreFactory(
         private fun delete(id: Long) {
             dispatch(Msg.Deleted(id))
 
-            scope.launch(ioContext) {
-                dataStore.removeItem(id)
+            scope.launch {
+                removeTodoItemUseCase.execute(id)
             }
         }
 
@@ -75,8 +76,8 @@ internal class ListStoreFactory(
 
             val item = state().items.find { it.id == id } ?: return
 
-            scope.launch(ioContext) {
-                dataStore.updateItem(item)
+            scope.launch {
+                editTodoItemUseCase.execute(item)
             }
         }
     }
