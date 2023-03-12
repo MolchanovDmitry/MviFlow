@@ -1,12 +1,11 @@
 package dmitry.molchanov.presentation.main
 
 import dmitry.molchanov.model.TodoItem
+import dmitry.molchanov.mvi.MviViewModel
+import dmitry.molchanov.presentation.main.MainViewModel.State
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 
-interface MainViewModel {
-
-    val state: StateFlow<State>
+interface MainViewModel: MviViewModel<State> {
 
     val sideEffect: SharedFlow<SideEffect>
 
@@ -19,7 +18,6 @@ interface MainViewModel {
 
     sealed class Intent
     object AddTodoItem : Intent()
-    object Release: Intent()
     class ClickItem(val itemId: Long) : Intent()
     class EditItem(val itemId: Long) : Intent()
     class DeleteItem(val itemId: Long) : Intent()

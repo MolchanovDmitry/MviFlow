@@ -9,7 +9,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dmitry.molchanov.flowmvi.android.R
 import dmitry.molchanov.flowmvi.android.statesToModel
-import dmitry.molchanov.presentation.MainViewModelPlatformImpl
+import dmitry.molchanov.presentation.MainVM
 import dmitry.molchanov.presentation.main.MainViewModel
 import dmitry.molchanov.util.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainFragment(private val onItemClick: (Long) -> Unit) : Fragment(R.layout.todo_list) {
 
     private val dispatchers by inject<Dispatchers>()
-    private val vm: MainViewModel by viewModel<MainViewModelPlatformImpl>()
+    private val vm: MainViewModel by viewModel<MainVM>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

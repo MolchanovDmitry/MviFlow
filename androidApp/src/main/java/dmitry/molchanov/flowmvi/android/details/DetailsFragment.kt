@@ -8,17 +8,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dmitry.molchanov.flowmvi.android.R
-import dmitry.molchanov.presentation.DetailsViewModelPlatformImpl
+import dmitry.molchanov.presentation.DetailsVM
 import dmitry.molchanov.presentation.details.DetailsViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class DetailsFragment : Fragment(R.layout.todo_details) {
 
-    private val vm: DetailsViewModel by viewModel<DetailsViewModelPlatformImpl> {
+    private val vm: DetailsViewModel by viewModel<DetailsVM> {
         parametersOf(requireArguments().getLong(KEY_ARGUMENTS))
     }
 
@@ -27,8 +26,13 @@ class DetailsFragment : Fragment(R.layout.todo_details) {
         val detailView = DetailsViewImpl(view, DetailsViewEventHandler(vm)::handle)
         vm.state
             .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-            .map { it.todoItem }
-            .onEach(detailView::render)
+            .onEach { state ->
+                when(state){
+                    DetailsViewModel.FinisState -> parentFragmentManager.popBackStack()
+                    is DetailsViewModel.ItemState -> detailView.render(state.todoItem)
+                    else -> Unit
+                }
+            }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 

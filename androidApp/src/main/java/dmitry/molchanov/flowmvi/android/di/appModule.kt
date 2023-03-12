@@ -1,7 +1,7 @@
 package dmitry.molchanov.flowmvi.android.di
 
-import dmitry.molchanov.presentation.DetailsViewModelPlatformImpl
-import dmitry.molchanov.presentation.MainViewModelPlatformImpl
+import dmitry.molchanov.presentation.DetailsVM
+import dmitry.molchanov.presentation.MainVM
 import dmitry.molchanov.presentation.details.DetailsViewModel
 import dmitry.molchanov.presentation.details.DetailsViewModelImpl
 import dmitry.molchanov.presentation.main.MainViewModel
@@ -11,11 +11,19 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-    viewModel { MainViewModelPlatformImpl(get()) }
+    viewModel { MainVM(get()) }
 
     factory<MainViewModel> { MainViewModelImpl(get(), get(), get(), get(), get()) }
 
-    viewModel { DetailsViewModelPlatformImpl(get()) }
+    viewModel { params -> DetailsVM(get(parameters = { params })) }
 
-    factory<DetailsViewModel> { params -> DetailsViewModelImpl(params.get(), get(), get(), get(), get()) }
+    factory<DetailsViewModel> { params ->
+        DetailsViewModelImpl(
+            itemId = params.get(),
+            dispatchers = get(),
+            getTodoItemsUseCase = get(),
+            editTodoUseCase = get(),
+            removeTodoItemUseCase = get()
+        )
+    }
 }

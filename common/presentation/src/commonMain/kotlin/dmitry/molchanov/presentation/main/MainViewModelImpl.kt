@@ -8,7 +8,6 @@ import dmitry.molchanov.presentation.main.MainViewModel.EditItem
 import dmitry.molchanov.presentation.main.MainViewModel.EmptyAddText
 import dmitry.molchanov.presentation.main.MainViewModel.Intent
 import dmitry.molchanov.presentation.main.MainViewModel.ItemClick
-import dmitry.molchanov.presentation.main.MainViewModel.Release
 import dmitry.molchanov.presentation.main.MainViewModel.SideEffect
 import dmitry.molchanov.presentation.main.MainViewModel.State
 import dmitry.molchanov.presentation.main.MainViewModel.SwitchDoneFlag
@@ -39,10 +38,9 @@ class MainViewModelImpl(
     private val removeUseCase: RemoveTodoItemUseCase,
 ) : MainViewModel {
 
-    private val scope =
-        CoroutineScope(dispatcher.io + SupervisorJob()) // на уровне вью модели все может выполняться в фоновом потоке
+    private val scope = CoroutineScope(dispatcher.io + SupervisorJob())
 
-    private val sideEffectFlow = MutableSharedFlow<SideEffect>()
+    private val sideEffectFlow = MutableSharedFlow<SideEffect>(extraBufferCapacity = 1)
     override val sideEffect = sideEffectFlow.asSharedFlow()
 
     private val stateFlow = MutableStateFlow(State())
@@ -84,10 +82,12 @@ class MainViewModelImpl(
                         ?.let { it.copy(isDone = !it.isDone) }
                         ?.let { todoItem -> editUseChange.execute(todoItem) }
                         ?: itemNotFound()
-                Release ->
-                    scope.cancel()
             }
         }
+    }
+
+    override fun clear() {
+        scope.cancel()
     }
 
     private suspend fun itemNotFound() = sideEffectFlow.emit(TodoItemNotFound)
