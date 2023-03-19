@@ -1,19 +1,17 @@
 pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
+    plugins {
+        kotlin("multiplatform").version("1.7.10")
     }
-}
-
-dependencyResolutionManagement {
     repositories {
-        google()
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         mavenCentral()
+        google()
     }
 }
 
 rootProject.name = "FlowMvi"
+include(":web")
 include(":mviKotlinApp")
 include(":androidApp")
 

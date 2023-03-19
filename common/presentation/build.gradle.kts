@@ -16,6 +16,11 @@ kotlin {
         }
     }
 
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         val commonMain by getting{
             dependencies {
@@ -23,6 +28,7 @@ kotlin {
                     project(Modules.Mvi),
                     project(Modules.Domain),
                     Deps.Coroutines.core,
+                    Deps.Koin.core
                 ).forEach(::implementation)
             }
         }

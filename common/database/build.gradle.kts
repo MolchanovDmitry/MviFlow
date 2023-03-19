@@ -25,13 +25,18 @@ kotlin {
         }
     }
 
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 arrayOf(
                     project(Modules.Domain),
                     project(Modules.Model),
-                    Deps.Koin.core,
+                    Deps.Coroutines.core,
                     Deps.Sqldelight.runtime,
                     Deps.Sqldelight.coroutinesExt,
                 ).forEach(::implementation)
@@ -40,6 +45,14 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+            }
+        }
+        val jsMain by getting{
+            dependencies{
+                arrayOf(
+                    Deps.Sqldelight.js_driver,
+                    Deps.Coroutines.js,
+                ).forEach(::implementation)
             }
         }
         val androidMain by getting{

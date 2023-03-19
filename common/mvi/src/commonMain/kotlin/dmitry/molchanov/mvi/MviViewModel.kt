@@ -1,10 +1,10 @@
 package dmitry.molchanov.mvi
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface MviViewModel<State> {
 
-    val state: Flow<State>
+    val state: StateFlow<State>
 
     fun clear()
 
