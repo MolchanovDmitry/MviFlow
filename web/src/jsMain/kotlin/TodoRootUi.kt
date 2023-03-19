@@ -1,20 +1,12 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import dmitry.molchanov.database.di.databaseModule
 import dmitry.molchanov.database.di.jsDatabase
 import dmitry.molchanov.di.domainModule
 import dmitry.molchanov.model.util.di.jsDomainModule
 import dmitry.molchanov.presentation.di.presentationModule
 import dmitry.molchanov.presentation.main.MainViewModel
-import org.jetbrains.compose.web.css.Position
-import org.jetbrains.compose.web.css.bottom
-import org.jetbrains.compose.web.css.height
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.css.left
-import org.jetbrains.compose.web.css.position
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.right
-import org.jetbrains.compose.web.css.top
 import org.jetbrains.compose.web.dom.TextArea
 import org.koin.core.context.startKoin
 
@@ -25,7 +17,6 @@ fun TodoRootUi(/*component: TodoRoot*/) {
             jsDomainModule,
             domainModule,
             jsDatabase,
-            databaseModule,
             presentationModule
         )
     }
@@ -47,11 +38,7 @@ fun TodoRootUi(/*component: TodoRoot*/) {
             koinApp.koin.get<MainViewModel>()
         }
 
-        TextArea { "asdasdasdasdasdasd" }
-        TodoMainUi(mainVM)
-
-        /*Crossfade(
-            target = childStack.active.instance,
+        Crossfade(
             attrs = {
                 style {
                     width(100.percent)
@@ -60,11 +47,8 @@ fun TodoRootUi(/*component: TodoRoot*/) {
                     left(0.px)
                     top(0.px)
                 }
-            }
-        ) { child ->
-            when (child) {
-                is TodoRoot.Child.Main -> TodoMainUi(child.component)
-            }
-        }*/
+            },
+            content = { TodoMainUi(mainVM) }
+        )
     }
 }

@@ -1,6 +1,7 @@
 package dmitry.molchanov.flowmvi.android.di
 
 import dmitry.molchanov.presentation.DetailsVM
+import dmitry.molchanov.presentation.MainVM
 import dmitry.molchanov.presentation.di.presentationModule
 import dmitry.molchanov.presentation.main.MainViewModel
 import dmitry.molchanov.presentation.main.MainViewModelImpl
@@ -14,4 +15,6 @@ val appModule = module {
     factory<MainViewModel> { MainViewModelImpl(get(), get(), get(), get(), get()) }
 
     viewModel { params -> DetailsVM(get(parameters = { params })) }
+
+    viewModel { MainVM(get()) }
 }

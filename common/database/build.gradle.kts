@@ -36,6 +36,7 @@ kotlin {
                 arrayOf(
                     project(Modules.Domain),
                     project(Modules.Model),
+                    Deps.Koin.core,
                     Deps.Coroutines.core,
                     Deps.Sqldelight.runtime,
                     Deps.Sqldelight.coroutinesExt,
