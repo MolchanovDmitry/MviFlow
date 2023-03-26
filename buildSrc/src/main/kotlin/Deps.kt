@@ -16,9 +16,10 @@ object Deps {
 
     // kotlinx
     object Coroutines {
-        private const val version = "1.6.4"
-        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+        private const val version = "1.6.3-native-mt"
+        const val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
     }
 
     object Serialization {
@@ -26,29 +27,11 @@ object Deps {
         const val kotlinx_json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
     }
 
-    // Http client
-    const val okhttp = "com.squareup.okhttp3:okhttp:4.9.0"
-    const val logging_interceptor = "com.squareup.okhttp3:logging-interceptor:4.9.0"
-
     // Lifecycle
     const val androidx_lifecycle_runtime_ktx =
         "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
     const val androidx_lifecycle_viewmodel_ktx =
         "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha03"
-
-    // Leak canary
-    const val leak_canary = "com.squareup.leakcanary:leakcanary-android:2.7"
-
-    // map
-    const val play_services_maps = "com.google.android.gms:play-services-maps:18.0.2"
-
-    // for custom marker
-    const val maps_utils = "com.google.maps.android:android-maps-utils-v3:2.3.0"
-    const val maps_ktx = "com.google.maps.android:maps-ktx:3.0.0"
-
-    const val maps_v3 = "com.google.maps.android:maps-v3-ktx:2.2.0"
-
-    const val maps_compose = "com.google.maps.android:maps-compose:1.0.0"
 
     /* Compose */
     const val compose_version = "1.3.1"
@@ -79,6 +62,7 @@ object Deps {
     object Koin {
         private const val koin_version = "3.3.2"
         const val core = "io.insert-koin:koin-core:$koin_version"
+        const val js = "io.insert-koin:koin-core-js:$koin_version"
         const val android = "io.insert-koin:koin-android:$koin_version"
         const val compose = "io.insert-koin:koin-androidx-compose:3.4.1"
     }
@@ -89,23 +73,7 @@ object Deps {
         const val android_driver = "com.squareup.sqldelight:android-driver:$sqlDelightVersion"
         const val runtime = "com.squareup.sqldelight:runtime:$sqlDelightVersion"
         const val coroutinesExt = "com.squareup.sqldelight:coroutines-extensions:$sqlDelightVersion"
+        const val js_driver = "com.squareup.sqldelight:sqljs-driver:$sqlDelightVersion"
     }
 
-    object Ktor {
-        private const val ktorVersion = "1.6.5"
-        const val core = "io.ktor:ktor-client-core:$ktorVersion"
-        const val serialization = "io.ktor:ktor-client-serialization-jvm:$ktorVersion"
-        const val okhttp = "io.ktor:ktor-client-okhttp:$ktorVersion"
-        const val android = "io.ktor:ktor-client-android:$ktorVersion"
-        const val interceptor = "com.squareup.okhttp3:logging-interceptor:4.9.1"
-    }
-
-    // Unit test
-    const val junit = "junit:junit:4.13.2"
-    const val mockito_core = "org.mockito:mockito-core:4.1.0"
-    const val mockito_inline = "org.mockito:mockito-inline:4.1.0"
-    const val robolectric = "org.robolectric:robolectric:4.5.1"
-    const val androidx_test_core_ktx = "androidx.test:core-ktx:1.3.0"
-    const val mock_web_server = "com.squareup.okhttp3:mockwebserver:4.3.1"
-    const val coroutine_test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2"
 }
