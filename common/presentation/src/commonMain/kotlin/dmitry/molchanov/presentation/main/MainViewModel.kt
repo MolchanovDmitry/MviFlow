@@ -2,14 +2,13 @@ package dmitry.molchanov.presentation.main
 
 import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.mvi.MviViewModel
+import dmitry.molchanov.presentation.main.MainViewModel.Intent
 import dmitry.molchanov.presentation.main.MainViewModel.State
 import kotlinx.coroutines.flow.SharedFlow
 
-interface MainViewModel: MviViewModel<State> {
+interface MainViewModel: MviViewModel<State, Intent> {
 
     val sideEffect: SharedFlow<SideEffect>
-
-    fun onIntent(intent: Intent)
 
     data class State(
         val todoItems: List<TodoItem> = emptyList(),

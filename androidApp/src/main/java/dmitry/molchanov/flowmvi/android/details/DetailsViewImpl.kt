@@ -10,14 +10,9 @@ import dmitry.molchanov.flowmvi.android.SimpleTextWatcher
 import dmitry.molchanov.flowmvi.android.getViewById
 import dmitry.molchanov.flowmvi.android.setTextCompat
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.mvi.MviView
 import dmitry.molchanov.presentation.details.DetailsView
-import dmitry.molchanov.presentation.details.DetailsView.Event
 
-class DetailsViewImpl(
-    root: View,
-    override val dispatch: (Event) -> Unit
-) : MviView<TodoItem, Event>, DetailsView {
+class DetailsViewImpl(root: View) : DetailsView() {
 
     private val textWatcher =
         object : SimpleTextWatcher() {

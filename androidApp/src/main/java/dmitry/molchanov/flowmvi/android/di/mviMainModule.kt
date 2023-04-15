@@ -1,19 +1,19 @@
 package dmitry.molchanov.flowmvi.android.di
 
 import dmitry.molchanov.flowmvi.android.main.MainController
-import org.koin.core.definition.Definition
-import org.koin.core.definition.KoinDefinition
-import org.koin.core.qualifier.Qualifier
+import dmitry.molchanov.flowmvi.android.main.MainScreenIntentMapper
 import org.koin.dsl.module
 
 val mviMainModule = module {
 
-    factory {
+    factory { params ->
         MainController(
-            lifecycle = it.get(),
-            lifecycleOwner = it.get(),
+            lifecycle = params.get(),
+            lifecycleOwner = params.get(),
             viewModel = get(),
             dispatchers = get(),
+            onItemClick = params.get(),
+            mainScreenEventHandler = MainScreenIntentMapper(),
         )
     }
 
