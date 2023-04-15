@@ -18,7 +18,11 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+                arrayOf(
+                    Deps.Koin.core,
+                    Deps.Koin.android,
+                    Deps.androidx_lifecycle_viewmodel_ktx
+                ).forEach(::implementation)
             }
         }
     }

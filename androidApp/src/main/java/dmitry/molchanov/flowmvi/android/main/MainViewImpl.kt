@@ -2,6 +2,7 @@ package dmitry.molchanov.flowmvi.android.main
 
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import dmitry.molchanov.flowmvi.android.R
 import dmitry.molchanov.flowmvi.android.SimpleTextWatcher
@@ -12,7 +13,7 @@ import dmitry.molchanov.presentation.main.MainView.Event
 import dmitry.molchanov.presentation.main.MainView.Model
 
 class MainViewImpl(
-    root: View,
+    private val root: View,
     override val dispatch: (Event) -> Unit
 ) : MainView<Model, Event> {
 
@@ -40,6 +41,10 @@ class MainViewImpl(
         }
 
         editText.addTextChangedListener(textWatcher)
+    }
+
+    fun showMessage(text: String) {
+        Toast.makeText(root.context, text, Toast.LENGTH_SHORT).show()
     }
 
     override fun render(model: Model) {

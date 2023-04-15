@@ -10,6 +10,8 @@ import org.koin.dsl.module
 
 val appModule = module {
 
+    includes(mviMainModule)
+
     includes(presentationModule)
 
     factory<MainViewModel> { MainViewModelImpl(get(), get(), get(), get(), get()) }
