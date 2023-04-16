@@ -10,7 +10,6 @@ class MainVM(
 
     override fun onCleared() {
         super.onCleared()
-        println("112233 mainVM clear")
         mainViewModel.clear()
     }
 }

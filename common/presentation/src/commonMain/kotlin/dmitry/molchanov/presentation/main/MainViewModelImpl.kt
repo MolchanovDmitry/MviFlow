@@ -21,7 +21,6 @@ import dmitry.molchanov.util.Dispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -48,18 +47,9 @@ class MainViewModelImpl(
     override val state = stateFlow.asStateFlow()
 
     init {
-        scope.launch {
-            qwe()
-        }
         getTodoItemsUseCase.execute()
             .onEach { todoItems -> stateFlow.update { it.copy(todoItems = todoItems) } }
             .launchIn(scope)
-    }
-
-    private suspend fun qwe() {
-        delay(5000)
-        println("112233 items = ${state.value.todoItems}")
-        qwe()
     }
 
     override fun onIntent(intent: Intent) {
@@ -97,7 +87,6 @@ class MainViewModelImpl(
     }
 
     override fun clear() {
-        println("112233 clear")
         scope.cancel()
     }
 

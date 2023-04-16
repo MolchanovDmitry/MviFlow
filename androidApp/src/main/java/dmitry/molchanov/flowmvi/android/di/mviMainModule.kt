@@ -12,22 +12,22 @@ val mviMainModule = module {
 
     factory { params ->
         MainController(
-            lifecycle = params.get(),
             viewModel = params.get(),
-            dispatchers = get(),
             onItemClick = params.get(),
+            lifecycleFetcher = params.get(),
+            dispatchers = get(),
             mainScreenEventHandler = MainScreenIntentMapper(),
         )
     }
 
     factory { params ->
         DetailsController(
-            lifecycle = params.get(),
             detailsViewModel = get<DetailsViewModel> {
                 parametersOf(params.get())
             },
             dispatchers = get(),
             detailsViewEventHandler = DetailsViewEventHandler(),
+            lifecycleFetcher = params.get(),
         )
     }
 

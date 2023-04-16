@@ -36,7 +36,6 @@ class DetailsViewImpl(root: View) : DetailsView() {
     }
 
     override fun render(model: Model) {
-        println("112233 render $model")
         editText.setTextCompat(model.text, textWatcher)
         checkBox.isChecked = model.isDone
     }

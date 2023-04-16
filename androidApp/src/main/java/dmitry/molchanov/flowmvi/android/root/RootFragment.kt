@@ -27,13 +27,17 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
 
     override fun onBackPressed(): Boolean =
         if (childFragmentManager.backStackEntryCount > 0) {
+            println("112233 childFragmentManager.backStackEntryCount more than 0")
+            println("112233 childFragmentManager.backStackEntryCount ${childFragmentManager.backStackEntryCount}")
             childFragmentManager.popBackStack()
             true
         } else {
+            println("112233 childFragmentManager.backStackEntryCount less than 0")
             false
         }
 
     private fun openDetails(itemId: Long) {
+        println("112233 openDetails itemId = $itemId")
         childFragmentManager
             .beginTransaction()
             .setCustomAnimations(

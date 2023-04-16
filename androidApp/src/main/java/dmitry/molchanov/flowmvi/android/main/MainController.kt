@@ -14,6 +14,8 @@ import dmitry.molchanov.presentation.main.MainView.Model
 import dmitry.molchanov.presentation.main.MainViewModel.Intent
 import dmitry.molchanov.presentation.main.MainViewModel.ItemClick
 import dmitry.molchanov.util.Dispatchers
+import dmity.molchanov.mvi.LifecycleFetcher
+import dmity.molchanov.mvi.lifecycle
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 
 class MainController(
-    private val lifecycle: Lifecycle,
+    private val lifecycleFetcher: LifecycleFetcher,
     private val viewModel: MainVM,
     private val dispatchers: Dispatchers,
     private val onItemClick: (Long) -> Unit,
@@ -32,16 +34,15 @@ class MainController(
         super.onCreate(mviView)
 
         viewModel.state
-            .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-            .onEach { println("112233 kokoke $it") }
+            .flowWithLifecycle(lifecycleFetcher.lifecycle, Lifecycle.State.STARTED)
+            .onEach { println("112233 calling current state ******") }
             .map(statesToModel)
             .flowOn(dispatchers.io)
             .onEach(::render)
-            .launchIn(lifecycle.coroutineScope)
-
+            .launchIn(lifecycleFetcher.lifecycle.coroutineScope)
 
         viewModel.sideEffect
-            .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+            .flowWithLifecycle(lifecycleFetcher.lifecycle, Lifecycle.State.STARTED)
             .onEach { vmSideEffect ->
                 if (vmSideEffect is ItemClick) {
                     onItemClick.invoke(vmSideEffect.todoItem.id)
@@ -49,7 +50,7 @@ class MainController(
             }
             .mapNotNull(sideEffectMapper)
             .onEach(::onSideEffect)
-            .launchIn(lifecycle.coroutineScope)
+            .launchIn(lifecycleFetcher.lifecycle.coroutineScope)
     }
 
 }

@@ -5,12 +5,12 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import dmitry.molchanov.flowmvi.android.R
-import dmitry.molchanov.flowmvi.android.main.mviInject
+import dmity.molchanov.mvi.lifecycleInject
 import org.koin.core.parameter.parametersOf
 
 class DetailsFragment : Fragment(R.layout.todo_details) {
 
-    private val detailsController by mviInject<DetailsController>{
+    private val detailsController by lifecycleInject<DetailsController>{
         parametersOf(requireArguments().getLong(KEY_ARGUMENTS))
     }
 
