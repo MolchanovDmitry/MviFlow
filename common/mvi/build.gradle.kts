@@ -15,10 +15,10 @@ kotlin {
         androidMain {
             dependencies {
                 arrayOf(
-                    Deps.androidx_lifecycle_viewmodel_ktx,
-                    Deps.androidx_lifecycle_runtime_ktx,
-                    Deps.androidx_fragment_ktx,
-                    Deps.androidx_activity_ktx,
+                    Deps.Androidx.Lifecycle.viewModelKtx,
+                    Deps.Androidx.Lifecycle.runtimeKtx,
+                    Deps.Androidx.fragmentKtx,
+                    Deps.Androidx.activityKtx,
                     Deps.Koin.android
                 ).forEach(::implementation)
             }

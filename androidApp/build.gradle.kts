@@ -36,6 +36,6 @@ dependencies {
         Deps.Koin.android,
         Deps.Koin.core,
         Deps.material,
-        Deps.androidx_appcompat
+        Deps.Androidx.appcompat
     ).forEach(::implementation)
 }

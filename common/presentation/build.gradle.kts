@@ -21,7 +21,7 @@ kotlin {
                 arrayOf(
                     Deps.Koin.core,
                     Deps.Koin.android,
-                    Deps.androidx_lifecycle_viewmodel_ktx
+                    Deps.Androidx.Lifecycle.viewModelKtx
                 ).forEach(::implementation)
             }
         }
