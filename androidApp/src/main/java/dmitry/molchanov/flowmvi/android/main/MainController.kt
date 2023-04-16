@@ -35,7 +35,6 @@ class MainController(
 
         viewModel.state
             .flowWithLifecycle(lifecycleFetcher.lifecycle, Lifecycle.State.STARTED)
-            .onEach { println("112233 calling current state ******") }
             .map(statesToModel)
             .flowOn(dispatchers.io)
             .onEach(::render)

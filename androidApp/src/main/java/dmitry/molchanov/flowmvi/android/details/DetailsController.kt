@@ -23,6 +23,7 @@ class DetailsController(
     private val lifecycleFetcher: LifecycleFetcher,
     private val detailsViewModel: DetailsViewModel,
     private val dispatchers: Dispatchers,
+    private val onItemDeleted: () -> Unit,
     detailsViewEventHandler: DetailsViewEventHandler
 ) : MviController<Model, Event, Intent, Unit>(detailsViewModel, detailsViewEventHandler) {
 
@@ -31,6 +32,11 @@ class DetailsController(
 
         detailsViewModel.state
             .flowWithLifecycle(lifecycleFetcher.lifecycle, Lifecycle.State.STARTED)
+            .onEach { state ->
+                if (state is DetailsViewModel.FinisState) {
+                    onItemDeleted.invoke()
+                }
+            }
             .filterIsInstance<ItemState>()
             .map { state -> Model(text = state.todoItem.text, isDone = state.todoItem.isDone) }
             .flowOn(dispatchers.io)

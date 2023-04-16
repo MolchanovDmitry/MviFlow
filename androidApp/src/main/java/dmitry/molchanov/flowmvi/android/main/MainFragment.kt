@@ -7,14 +7,13 @@ import dmitry.molchanov.flowmvi.android.R
 import dmitry.molchanov.presentation.MainVM
 import dmitry.molchanov.presentation.main.MainView
 import dmity.molchanov.mvi.lifecycleInject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 
 class MainFragment(private val onItemClick: (Long) -> Unit) : Fragment(R.layout.todo_list) {
 
-    private val mainVM by viewModel<MainVM>()
     private val controller by lifecycleInject<MainController> {
-        parametersOf(onItemClick, mainVM)
+        parametersOf(onItemClick, getViewModel<MainVM>())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

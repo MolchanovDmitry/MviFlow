@@ -27,17 +27,13 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
 
     override fun onBackPressed(): Boolean =
         if (childFragmentManager.backStackEntryCount > 0) {
-            println("112233 childFragmentManager.backStackEntryCount more than 0")
-            println("112233 childFragmentManager.backStackEntryCount ${childFragmentManager.backStackEntryCount}")
             childFragmentManager.popBackStack()
             true
         } else {
-            println("112233 childFragmentManager.backStackEntryCount less than 0")
             false
         }
 
     private fun openDetails(itemId: Long) {
-        println("112233 openDetails itemId = $itemId")
         childFragmentManager
             .beginTransaction()
             .setCustomAnimations(
@@ -55,6 +51,10 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
             .commit()
     }
 
+    private fun closeDetailsFragment(){
+        childFragmentManager.popBackStack()
+    }
+
     private companion object {
         private const val TAG_MAIN = "MAIN"
         private const val TAG_DETAILS = "DETAILS"
@@ -70,6 +70,6 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
 
         fun mainFragment() = MainFragment(onItemClick = ::openDetails)
 
-        fun detailsFragment() = DetailsFragment()
+        fun detailsFragment() = DetailsFragment(onItemDeleted = ::closeDetailsFragment)
     }
 }

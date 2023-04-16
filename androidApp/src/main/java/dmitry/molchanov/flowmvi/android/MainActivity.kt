@@ -26,11 +26,9 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
             if ((it as? OnBackPressedHandler)?.onBackPressed() == true) {
-                println("112233 its OnBackPressedHandler")
                 return
             }
         }
-        println("112233 its not OnBackPressedHandler")
         super.onBackPressed()
     }
 
