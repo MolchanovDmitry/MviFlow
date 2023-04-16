@@ -1,9 +1,8 @@
 package dmitry.molchanov.flowmvi.android.main
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import dmitry.molchanov.flowmvi.android.sideEffectMapper
 import dmitry.molchanov.flowmvi.android.statesToModel
 import dmitry.molchanov.mvi.MviController
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.onEach
 
 class MainController(
     private val lifecycle: Lifecycle,
-    private val lifecycleOwner: LifecycleOwner,
     private val viewModel: MainVM,
     private val dispatchers: Dispatchers,
     private val onItemClick: (Long) -> Unit,
@@ -35,10 +33,11 @@ class MainController(
 
         viewModel.state
             .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+            .onEach { println("112233 kokoke $it") }
             .map(statesToModel)
             .flowOn(dispatchers.io)
             .onEach(::render)
-            .launchIn(lifecycleOwner.lifecycleScope)
+            .launchIn(lifecycle.coroutineScope)
 
 
         viewModel.sideEffect
@@ -50,7 +49,7 @@ class MainController(
             }
             .mapNotNull(sideEffectMapper)
             .onEach(::onSideEffect)
-            .launchIn(lifecycleOwner.lifecycleScope)
+            .launchIn(lifecycle.coroutineScope)
     }
 
 }

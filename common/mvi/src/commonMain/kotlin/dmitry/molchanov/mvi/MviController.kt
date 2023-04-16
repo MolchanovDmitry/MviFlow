@@ -23,9 +23,10 @@ abstract class MviController<Model, Event, Intent, SideEffect>(
         mviView.render(model)
     }
 
-    protected fun dispatch(event: Event) {
-
-    }
+   /* protected fun dispatch(event: Event) {
+        mviIntentMapper?.map?.invoke(event)
+            ?.let(mviViewModel::onIntent)
+    }*/
 
     protected fun onSideEffect(sideEffect: SideEffect) {
         (this.mviView as? MviSideEffectHandler<SideEffect>)?.onSideEffect(sideEffect)

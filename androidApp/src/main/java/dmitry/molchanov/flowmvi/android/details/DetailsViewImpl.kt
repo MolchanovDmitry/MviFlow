@@ -9,7 +9,6 @@ import dmitry.molchanov.flowmvi.android.R
 import dmitry.molchanov.flowmvi.android.SimpleTextWatcher
 import dmitry.molchanov.flowmvi.android.getViewById
 import dmitry.molchanov.flowmvi.android.setTextCompat
-import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.presentation.details.DetailsView
 
 class DetailsViewImpl(root: View) : DetailsView() {
@@ -36,9 +35,10 @@ class DetailsViewImpl(root: View) : DetailsView() {
         }
     }
 
-    override fun render(todoItem: TodoItem) {
-        editText.setTextCompat(todoItem.text, textWatcher)
-        checkBox.isChecked = todoItem.isDone
+    override fun render(model: Model) {
+        println("112233 render $model")
+        editText.setTextCompat(model.text, textWatcher)
+        checkBox.isChecked = model.isDone
     }
 
     private fun onMenuItemClick(item: MenuItem): Boolean =

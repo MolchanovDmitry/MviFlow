@@ -5,30 +5,18 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import dmitry.molchanov.flowmvi.android.R
-import dmitry.molchanov.presentation.DetailsVM
-import dmitry.molchanov.presentation.details.DetailsViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dmitry.molchanov.flowmvi.android.main.mviInject
 import org.koin.core.parameter.parametersOf
 
 class DetailsFragment : Fragment(R.layout.todo_details) {
 
-    private val vm: DetailsViewModel by viewModel<DetailsVM> {
+    private val detailsController by mviInject<DetailsController>{
         parametersOf(requireArguments().getLong(KEY_ARGUMENTS))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /*val detailView = DetailsViewImpl(view, DetailsViewEventHandler(vm)::handle)
-        vm.state
-            .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-            .onEach { state ->
-                when(state){
-                    DetailsViewModel.FinisState -> parentFragmentManager.popBackStack()
-                    is DetailsViewModel.ItemState -> detailView.render(state.todoItem)
-                    else -> Unit
-                }
-            }
-            .launchIn(viewLifecycleOwner.lifecycleScope)*/
+        detailsController.onCreate(DetailsViewImpl(view))
     }
 
     fun setArguments(itemId: Long): DetailsFragment {

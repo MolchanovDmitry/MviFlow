@@ -28,6 +28,10 @@ class DetailsViewModelImpl(
     private val removeTodoItemUseCase: RemoveTodoItemUseCase,
 ) : DetailsViewModel {
 
+    init {
+        println("112233 itemId = $itemId")
+    }
+
     private val scope = CoroutineScope(dispatchers.io + SupervisorJob())
 
     override val state = getTodoItemsUseCase.execute()
@@ -39,6 +43,7 @@ class DetailsViewModelImpl(
         get() = (state.value as? ItemState)?.todoItem
 
     override fun onIntent(intent: Intent) {
+        println("112233 item = ${currentItem}")
         scope.launch {
             when (intent) {
                 DeleteItem ->

@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
+    /*override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
             if ((it as? OnBackPressedHandler)?.onBackPressed() == true) {
                 return
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         super.onBackPressed()
-    }
+    }*/
 
     private inner class FragmentFactoryImpl : FragmentFactory() {
         override fun instantiate(classLoader: ClassLoader, className: String): Fragment =

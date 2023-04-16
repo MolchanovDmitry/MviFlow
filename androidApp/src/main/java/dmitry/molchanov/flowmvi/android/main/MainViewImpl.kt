@@ -39,6 +39,7 @@ class MainViewImpl(private val root: View) : MainView() {
     }
 
     override fun render(model: Model) {
+        println("112233 mainview render = ${model}")
         adapter.items = model.items
         editText.setTextCompat(model.text, textWatcher)
     }
