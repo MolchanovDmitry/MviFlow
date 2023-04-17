@@ -4,13 +4,15 @@ import dmitry.molchanov.flowmvi.android.details.DetailsController
 import dmitry.molchanov.flowmvi.android.details.DetailsViewEventHandler
 import dmitry.molchanov.flowmvi.android.main.MainController
 import dmitry.molchanov.flowmvi.android.main.MainScreenIntentMapper
+import dmitry.molchanov.presentation.DetailsVM
+import dmity.molchanov.mvi.fetchViewModel
 import org.koin.dsl.module
 
-val mviMainModule = module {
+val controllerModule = module {
 
     factory { params ->
         MainController(
-            viewModel = params.get(),
+            viewModel = params.fetchViewModel(),
             onItemClick = params.get(),
             lifecycleFetcher = params.get(),
             dispatchers = get(),
@@ -20,14 +22,13 @@ val mviMainModule = module {
 
     factory { params ->
         DetailsController(
-            detailsViewModel = params.get(),
+            detailsViewModel = params.fetchViewModel<DetailsVM>(),
             dispatchers = get(),
             detailsViewEventHandler = DetailsViewEventHandler(),
             lifecycleFetcher = params.get(),
             onItemDeleted = params.get(),
         )
     }
-
 
 }
 

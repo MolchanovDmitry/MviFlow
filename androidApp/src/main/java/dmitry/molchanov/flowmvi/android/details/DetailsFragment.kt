@@ -5,9 +5,7 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import dmitry.molchanov.flowmvi.android.R
-import dmitry.molchanov.presentation.DetailsVM
-import dmity.molchanov.mvi.lifecycleInject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import dmity.molchanov.mvi.injectController
 import org.koin.core.parameter.parametersOf
 
 class DetailsFragment(private val onItemDeleted: () -> Unit) : Fragment(R.layout.todo_details) {
@@ -15,12 +13,10 @@ class DetailsFragment(private val onItemDeleted: () -> Unit) : Fragment(R.layout
     private val argument: Long
         get() = requireArguments().getLong(KEY_ARGUMENTS)
 
-    private val detailsController by lifecycleInject<DetailsController> {
-        parametersOf(
-            onItemDeleted,
-            getViewModel<DetailsVM> { parametersOf(argument) },
-        )
-    }
+    private val detailsController by injectController<DetailsController>(
+        controllerParams = { parametersOf(onItemDeleted) },
+        viewModelParams = { parametersOf(argument) },
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
