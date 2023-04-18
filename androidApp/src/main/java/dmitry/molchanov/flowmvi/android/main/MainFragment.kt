@@ -16,7 +16,6 @@ class MainFragment(private val onItemClick: (Long) -> Unit) : Fragment(R.layout.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mainView: MainView = MainViewImpl(view)
-        controller.onCreate(mainView)
+        controller.onCreate(MainViewImpl(view))
     }
 }

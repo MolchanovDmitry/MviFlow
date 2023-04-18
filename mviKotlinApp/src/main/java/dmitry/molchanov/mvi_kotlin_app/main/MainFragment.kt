@@ -7,34 +7,22 @@ import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import dmitry.molchanov.mvi_kotlin_app.R
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.main.MainController
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore
-import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
-class MainFragment(
-    private val onItemSelected: (id: Long) -> Unit,
-) : Fragment(R.layout.todo_list) {
+class MainFragment(private val onItemSelected: (id: Long) -> Unit) : Fragment(R.layout.todo_list) {
 
-    private lateinit var controller: MainController
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        controller =
-            MainController(
-                lifecycle = essentyLifecycle(),
-                onItemSelected = onItemSelected,
-                dispatchers = inject<TodoDispatchers>().value,
-                listStore = inject<ListStore>().value,
-                addStore = instanceKeeper().getStore { inject<AddStore>().value }
-            )
+    private val controller: MainController by inject{
+        parametersOf(
+            essentyLifecycle(),
+            onItemSelected,
+            instanceKeeper().getStore { inject<AddStore>().value })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         controller.onViewCreated(MainViewImpl(view), viewLifecycleOwner.essentyLifecycle())
     }
 

@@ -1,20 +1,16 @@
 package dmitry.molchanov.mvi_kotlin_app.di
 
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import dmitry.molchanov.mvi_kotlin_app.domain.DefaultDispatchers
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStoreFactory
+import dmitry.molchanov.mvi_kotlin_app.domain.main.MainController
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStoreFactory
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStoreFactory
 import dmitry.molchanov.mvi_kotlin_app.storeFactoryInstance
+import dmitry.molchanov.util.Dispatchers
 import org.koin.dsl.module
 
 val mviKotlinModule = module {
-
-    factory<TodoDispatchers> {
-        DefaultDispatchers
-    }
 
     factory<StoreFactory> {
         storeFactoryInstance
@@ -23,7 +19,7 @@ val mviKotlinModule = module {
     factory { params ->
         DetailsStoreFactory(
             storeFactory = get(),
-            mainContext = get<TodoDispatchers>().main,
+            mainContext = get<Dispatchers>().main,
             itemId = params.get(),
             editTodoItemUseCase = get(),
             getTodoItemsUseCase = get(),
@@ -35,7 +31,7 @@ val mviKotlinModule = module {
     factory {
         ListStoreFactory(
             storeFactory = get(),
-            mainContext = get<TodoDispatchers>().main,
+            mainContext = get<Dispatchers>().main,
             getTodoItemsUseCase = get(),
             editTodoItemUseCase = get(),
             removeTodoItemUseCase = get(),
@@ -46,7 +42,7 @@ val mviKotlinModule = module {
     factory {
         AddStoreFactory(
             storeFactory = get(),
-            mainContext = get<TodoDispatchers>().main,
+            mainContext = get<Dispatchers>().main,
             addTodoItemUseCase = get(),
         ).create()
     }
@@ -54,13 +50,23 @@ val mviKotlinModule = module {
     factory<ListStore> {
         ListStoreFactory(
             storeFactory = get(),
-            mainContext = get<TodoDispatchers>().main,
+            mainContext = get<Dispatchers>().main,
             getTodoItemsUseCase = get(),
             editTodoItemUseCase = get(),
             removeTodoItemUseCase = get(),
-            ).create()
+        ).create()
     }
 
     factory { storeFactoryInstance }
+
+    factory { params ->
+        MainController(
+            lifecycle = params.get(),
+            onItemSelected = params.get(),
+            dispatchers = get(),
+            listStore = get(),
+            addStore = params.get()
+        )
+    }
 
 }
