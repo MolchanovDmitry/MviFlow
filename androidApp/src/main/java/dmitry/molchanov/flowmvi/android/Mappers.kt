@@ -11,6 +11,14 @@ val statesToModel: (MainViewModel.State) -> MainView.Model = { mainState ->
     )
 }
 
+val sideEffectMapper: (MainViewModel.SideEffect) -> MainView.Effect? = { vmSideEffect ->
+    when (vmSideEffect) {
+        MainViewModel.EmptyAddText -> MainView.ShowEmptyMessage
+        MainViewModel.TodoItemNotFound -> MainView.ShowNotFoundMessage
+        is MainViewModel.ItemClick -> null
+    }
+}
+
 private fun TodoItem.mapToModelItem(): MainView.Model.Item =
     MainView.Model.Item(id = id, text = text, isDone = isDone)
 

@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.mvi_kotlin_app.R
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.details.DetailsController
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore
 import dmitry.molchanov.mvi_kotlin_app.inject
+import dmitry.molchanov.util.Dispatchers
 import kotlinx.parcelize.Parcelize
 import org.koin.core.parameter.parametersOf
 
@@ -33,7 +33,7 @@ class DetailsFragment(
         controller =
             DetailsController(
                 lifecycle = essentyLifecycle(),
-                dispatchers = inject<TodoDispatchers>().value,
+                dispatchers = inject<Dispatchers>().value,
                 onItemChanged = onItemChanged,
                 onItemDeleted = onItemDeleted,
                 detailsStore = inject<DetailsStore> { parametersOf(args.itemId) }.value,

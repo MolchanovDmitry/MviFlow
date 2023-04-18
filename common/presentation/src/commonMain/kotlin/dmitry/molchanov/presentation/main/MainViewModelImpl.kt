@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.native.concurrent.ThreadLocal
 
 class MainViewModelImpl(
     dispatcher: Dispatchers,
@@ -74,7 +75,7 @@ class MainViewModelImpl(
                 is ClickItem ->
                     getItemById(intent.itemId)
                         ?.let(::ItemClick)
-                        ?.let(sideEffectFlow::tryEmit)
+                        ?.let { sideEffect -> sideEffectFlow.emit(sideEffect) }
                         ?: itemNotFound()
 
                 is SwitchDoneFlag ->

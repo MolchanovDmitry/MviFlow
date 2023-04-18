@@ -1,10 +1,12 @@
 package dmitry.molchanov.presentation.main
 
+import dmitry.molchanov.mvi.MviSideEffectHandler
 import dmitry.molchanov.mvi.MviView
+import dmitry.molchanov.presentation.main.MainView.Effect
 import dmitry.molchanov.presentation.main.MainView.Event
 import dmitry.molchanov.presentation.main.MainView.Model
 
-interface MainView<T, U> : MviView<Model, Event> {
+abstract class MainView : MviView<Model, Event>(), MviSideEffectHandler<Effect> {
 
     data class Model(
         val items: List<Item>,
@@ -30,4 +32,9 @@ interface MainView<T, U> : MviView<Model, Event> {
         data class TextChanged(val text: String) : Event()
         object AddClicked : Event()
     }
+
+    sealed class Effect
+    object ShowEmptyMessage : Effect()
+    object ShowNotFoundMessage : Effect()
+
 }

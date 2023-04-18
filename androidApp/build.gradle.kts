@@ -27,15 +27,15 @@ android {
 
 dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.4.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
     arrayOf(
         project(Modules.Mvi),
         project(Modules.Domain),
         project(Modules.Database),
         project(Modules.Presentation),
         Deps.Koin.android,
-        Deps.Koin.core
+        Deps.Koin.core,
+        Deps.material,
+        Deps.Androidx.appcompat
     ).forEach(::implementation)
 }

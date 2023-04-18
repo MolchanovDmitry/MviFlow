@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
                 return
             }
         }
-
         super.onBackPressed()
     }
 

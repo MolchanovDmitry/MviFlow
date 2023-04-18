@@ -8,15 +8,15 @@ import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore
 import dmitry.molchanov.mvi_kotlin_app.domain.details.store.DetailsStore.Label
+import dmitry.molchanov.util.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
 class DetailsController(
     lifecycle: Lifecycle,
-    private val dispatchers: TodoDispatchers,
+    private val dispatchers: Dispatchers,
     private val detailsStore: DetailsStore,
     private val onItemChanged: (todoItem: TodoItem) -> Unit,
     private val onItemDeleted: (id: Long) -> Unit,
