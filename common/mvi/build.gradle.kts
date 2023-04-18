@@ -7,7 +7,20 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(Deps.Coroutines.core)
+                arrayOf(
+                    Deps.Coroutines.core,
+                ).forEach(::implementation)
+            }
+        }
+        androidMain {
+            dependencies {
+                arrayOf(
+                    Deps.Androidx.Lifecycle.viewModelKtx,
+                    Deps.Androidx.Lifecycle.runtimeKtx,
+                    Deps.Androidx.fragmentKtx,
+                    Deps.Androidx.activityKtx,
+                    Deps.Koin.android
+                ).forEach(::implementation)
             }
         }
     }

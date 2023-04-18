@@ -51,6 +51,10 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
             .commit()
     }
 
+    private fun closeDetailsFragment(){
+        childFragmentManager.popBackStack()
+    }
+
     private companion object {
         private const val TAG_MAIN = "MAIN"
         private const val TAG_DETAILS = "DETAILS"
@@ -66,6 +70,6 @@ class RootFragment : Fragment(R.layout.content), OnBackPressedHandler {
 
         fun mainFragment() = MainFragment(onItemClick = ::openDetails)
 
-        fun detailsFragment() = DetailsFragment()
+        fun detailsFragment() = DetailsFragment(onItemDeleted = ::closeDetailsFragment)
     }
 }

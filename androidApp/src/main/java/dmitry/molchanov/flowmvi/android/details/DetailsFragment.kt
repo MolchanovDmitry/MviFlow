@@ -4,36 +4,23 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import dmitry.molchanov.flowmvi.android.R
-import dmitry.molchanov.presentation.DetailsVM
-import dmitry.molchanov.presentation.details.DetailsViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dmity.molchanov.mvi.injectController
 import org.koin.core.parameter.parametersOf
 
-class DetailsFragment : Fragment(R.layout.todo_details) {
+class DetailsFragment(private val onItemDeleted: () -> Unit) : Fragment(R.layout.todo_details) {
 
-    private val vm: DetailsViewModel by viewModel<DetailsVM> {
-        parametersOf(requireArguments().getLong(KEY_ARGUMENTS))
-    }
+    private val argument: Long
+        get() = requireArguments().getLong(KEY_ARGUMENTS)
+
+    private val detailsController by injectController<DetailsController>(
+        controllerParams = { parametersOf(onItemDeleted) },
+        viewModelParams = { parametersOf(argument) },
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val detailView = DetailsViewImpl(view, DetailsViewEventHandler(vm)::handle)
-        vm.state
-            .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-            .onEach { state ->
-                when(state){
-                    DetailsViewModel.FinisState -> parentFragmentManager.popBackStack()
-                    is DetailsViewModel.ItemState -> detailView.render(state.todoItem)
-                    else -> Unit
-                }
-            }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
+        detailsController.onCreate(DetailsViewImpl(view))
     }
 
     fun setArguments(itemId: Long): DetailsFragment {

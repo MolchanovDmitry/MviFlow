@@ -10,9 +10,15 @@ import org.koin.dsl.module
 
 val appModule = module {
 
+    includes(controllerModule)
+
     includes(presentationModule)
 
-    factory<MainViewModel> { MainViewModelImpl(get(), get(), get(), get(), get()) }
+    factory<MainViewModel> {
+        MainViewModelImpl(
+            get(), get(), get(), get(), get()
+        )
+    }
 
     viewModel { params -> DetailsVM(get(parameters = { params })) }
 

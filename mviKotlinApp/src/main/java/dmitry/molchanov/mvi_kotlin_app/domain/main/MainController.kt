@@ -7,16 +7,16 @@ import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.mvi_kotlin_app.domain.TodoDispatchers
 import dmitry.molchanov.mvi_kotlin_app.domain.main.MainView.Event
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.AddStore
 import dmitry.molchanov.mvi_kotlin_app.domain.main.store.ListStore
+import dmitry.molchanov.util.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 
 class MainController(
     lifecycle: Lifecycle,
-    private val dispatchers: TodoDispatchers,
+    private val dispatchers: Dispatchers,
     private val listStore: ListStore,
     private val addStore: AddStore,
     private val onItemSelected: (id: Long) -> Unit,

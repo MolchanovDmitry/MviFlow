@@ -2,19 +2,15 @@ package dmitry.molchanov.flowmvi.android.main
 
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import dmitry.molchanov.flowmvi.android.R
 import dmitry.molchanov.flowmvi.android.SimpleTextWatcher
 import dmitry.molchanov.flowmvi.android.getViewById
 import dmitry.molchanov.flowmvi.android.setTextCompat
 import dmitry.molchanov.presentation.main.MainView
-import dmitry.molchanov.presentation.main.MainView.Event
-import dmitry.molchanov.presentation.main.MainView.Model
 
-class MainViewImpl(
-    root: View,
-    override val dispatch: (Event) -> Unit
-) : MainView<Model, Event> {
+class MainViewImpl(private val root: View) : MainView() {
 
     private val adapter =
         ListAdapter(
@@ -46,4 +42,16 @@ class MainViewImpl(
         adapter.items = model.items
         editText.setTextCompat(model.text, textWatcher)
     }
+
+    override fun onSideEffect(sideEffect: MainView.Effect) {
+        when (sideEffect) {
+            MainView.ShowEmptyMessage -> showMessage("Пустой текст")
+            MainView.ShowNotFoundMessage -> showMessage("Элемент не найден")
+        }
+    }
+
+    private fun showMessage(text: String) {
+        Toast.makeText(root.context, text, Toast.LENGTH_SHORT).show()
+    }
+
 }

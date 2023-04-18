@@ -1,8 +1,13 @@
 package dmitry.molchanov.mvi
 
-interface MviView<Model, Event> {
+abstract class MviView<Model, Event> {
 
-    val dispatch: (Event) -> Unit
+    internal var dispatcher: ((Event) -> Unit)? = null
 
-    fun render(model: Model)
+    open fun render(model: Model) = Unit
+
+    fun dispatch(event: Event) {
+        dispatcher?.invoke(event)
+    }
+
 }

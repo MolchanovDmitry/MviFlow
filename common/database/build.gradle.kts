@@ -30,14 +30,14 @@ kotlin {
         jsMain {
             dependencies {
                 arrayOf(
-                    Deps.Sqldelight.js_driver,
+                    Deps.Sqldelight.jsDriver,
                     Deps.Coroutines.js,
                 ).forEach(::implementation)
             }
         }
         androidMain {
             dependencies {
-                implementation(Deps.Sqldelight.android_driver)
+                implementation(Deps.Sqldelight.androidDriver)
             }
         }
     }

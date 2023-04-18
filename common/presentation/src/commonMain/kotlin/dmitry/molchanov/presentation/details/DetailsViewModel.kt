@@ -2,11 +2,10 @@ package dmitry.molchanov.presentation.details
 
 import dmitry.molchanov.model.TodoItem
 import dmitry.molchanov.mvi.MviViewModel
+import dmitry.molchanov.presentation.details.DetailsViewModel.Intent
 import dmitry.molchanov.presentation.details.DetailsViewModel.State
 
-interface DetailsViewModel: MviViewModel<State> {
-
-    fun onIntent(intent: Intent)
+interface DetailsViewModel: MviViewModel<State, Intent> {
 
     sealed class State
     object EmptyState : State()
