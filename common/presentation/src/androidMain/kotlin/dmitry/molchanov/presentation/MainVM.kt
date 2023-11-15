@@ -1,15 +1,20 @@
 package dmitry.molchanov.presentation
 
 import androidx.lifecycle.ViewModel
-import dmitry.molchanov.presentation.main.MainViewModel
+import dmitry.molchanov.mvi.MviViewModel
+import dmitry.molchanov.presentation.main.MainStore.Intent
+import dmitry.molchanov.presentation.main.MainStore.Message
+import dmitry.molchanov.presentation.main.MainStore.SideEffect
+import dmitry.molchanov.presentation.main.MainStore.State
+import dmitry.molchanov.presentation.main.MainViewModelImpl
 
 class MainVM(
-    private val mainViewModel: MainViewModel
+    private val mainViewModelImpl: MainViewModelImpl
 ) : ViewModel(),
-    MainViewModel by mainViewModel {
+    MviViewModel<State, Intent, Message, SideEffect> by mainViewModelImpl {
 
     override fun onCleared() {
         super.onCleared()
-        mainViewModel.clear()
+        mainViewModelImpl.clear()
     }
 }

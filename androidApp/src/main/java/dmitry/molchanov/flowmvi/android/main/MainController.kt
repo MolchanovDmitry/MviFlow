@@ -8,11 +8,11 @@ import dmitry.molchanov.flowmvi.android.statesToModel
 import dmitry.molchanov.mvi.MviController
 import dmitry.molchanov.mvi.MviView
 import dmitry.molchanov.presentation.MainVM
+import dmitry.molchanov.presentation.main.MainStore.Intent
+import dmitry.molchanov.presentation.main.MainStore.ItemClick
 import dmitry.molchanov.presentation.main.MainView.Effect
 import dmitry.molchanov.presentation.main.MainView.Event
 import dmitry.molchanov.presentation.main.MainView.Model
-import dmitry.molchanov.presentation.main.MainViewModel.Intent
-import dmitry.molchanov.presentation.main.MainViewModel.ItemClick
 import dmitry.molchanov.util.Dispatchers
 import dmity.molchanov.mvi.LifecycleFetcher
 import dmity.molchanov.mvi.lifecycle

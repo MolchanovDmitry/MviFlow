@@ -1,12 +1,14 @@
 package dmitry.molchanov.presentation
 
 import androidx.lifecycle.ViewModel
-import dmitry.molchanov.presentation.details.DetailsViewModel
+import dmitry.molchanov.mvi.MviViewModel
+import dmitry.molchanov.presentation.details.DetailsStore.*
+import dmitry.molchanov.presentation.details.DetailsViewModelImpl
 
 class DetailsVM(
-    private val detailsViewModel: DetailsViewModel
+    private val detailsViewModel: DetailsViewModelImpl
 ) : ViewModel(),
-    DetailsViewModel by detailsViewModel {
+    MviViewModel<State, Intent, Message, Nothing> by detailsViewModel {
 
     override fun onCleared() {
         super.onCleared()

@@ -1,14 +1,8 @@
 package dmitry.molchanov.presentation.main
 
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.mvi.MviViewModel
-import dmitry.molchanov.presentation.main.MainViewModel.Intent
-import dmitry.molchanov.presentation.main.MainViewModel.State
-import kotlinx.coroutines.flow.SharedFlow
 
-interface MainViewModel: MviViewModel<State, Intent> {
-
-    val sideEffect: SharedFlow<SideEffect>
+interface MainStore {
 
     data class State(
         val todoItems: List<TodoItem> = emptyList(),
@@ -27,6 +21,10 @@ interface MainViewModel: MviViewModel<State, Intent> {
     object EmptyAddText : SideEffect()
     object TodoItemNotFound : SideEffect()
     class ItemClick(val todoItem: TodoItem) : SideEffect()
+
+    sealed class Message
+    class UpdateTodoItemsMsg(val todoItems: List<TodoItem>) : Message()
+    class UpdateText(val text: String) : Message()
 
 }
 

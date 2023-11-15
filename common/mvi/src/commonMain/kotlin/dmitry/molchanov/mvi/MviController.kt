@@ -1,7 +1,7 @@
 package dmitry.molchanov.mvi
 
 abstract class MviController<Model, Event, Intent, SideEffect>(
-    private val mviViewModel: MviViewModel<*, Intent>,
+    private val mviViewModel: MviViewModel<*, Intent, *, *>,
     private val mviIntentMapper: MviIntentMapper<Event, Intent>? = null
 ) {
 

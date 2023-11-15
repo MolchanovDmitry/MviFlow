@@ -1,6 +1,9 @@
 plugins {
     id("multiplatform-setup")
 }
+dependencies {
+    implementation(project(mapOf("path" to ":mviKotlinApp")))
+}
 
 kotlin {
 

@@ -1,18 +1,8 @@
 package dmitry.molchanov.presentation.main
 
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.presentation.main.MainViewModel.AddTodoItem
-import dmitry.molchanov.presentation.main.MainViewModel.ClickItem
-import dmitry.molchanov.presentation.main.MainViewModel.DeleteItem
-import dmitry.molchanov.presentation.main.MainViewModel.EditItem
-import dmitry.molchanov.presentation.main.MainViewModel.EmptyAddText
-import dmitry.molchanov.presentation.main.MainViewModel.Intent
-import dmitry.molchanov.presentation.main.MainViewModel.ItemClick
-import dmitry.molchanov.presentation.main.MainViewModel.SideEffect
-import dmitry.molchanov.presentation.main.MainViewModel.State
-import dmitry.molchanov.presentation.main.MainViewModel.SwitchDoneFlag
-import dmitry.molchanov.presentation.main.MainViewModel.TextChange
-import dmitry.molchanov.presentation.main.MainViewModel.TodoItemNotFound
+import dmitry.molchanov.mvi.MviViewModelImpl
+import dmitry.molchanov.presentation.main.MainStore.*
 import dmitry.molchanov.usecase.AddTodoItemUseCase
 import dmitry.molchanov.usecase.EditTodoItemUseCase
 import dmitry.molchanov.usecase.GetTodoItemsUseCase
@@ -21,35 +11,27 @@ import dmitry.molchanov.util.Dispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.native.concurrent.ThreadLocal
 
 class MainViewModelImpl(
     dispatcher: Dispatchers,
+    reducer: MainViewModelReducer,
     getTodoItemsUseCase: GetTodoItemsUseCase,
     private val addUseCase: AddTodoItemUseCase,
     private val editUseChange: EditTodoItemUseCase,
     private val removeUseCase: RemoveTodoItemUseCase,
-) : MainViewModel {
+) : MviViewModelImpl<State, Intent, Message, SideEffect>(
+    initState = State(),
+    reducer = reducer
+) {
 
     private val scope = CoroutineScope(dispatcher.io + SupervisorJob())
 
-    private val sideEffectFlow = MutableSharedFlow<SideEffect>(extraBufferCapacity = 1)
-    override val sideEffect = sideEffectFlow.asSharedFlow()
-
-    private val stateFlow = MutableStateFlow(State())
-    override val state = stateFlow.asStateFlow()
-
     init {
         getTodoItemsUseCase.execute()
-            .onEach { todoItems -> stateFlow.update { it.copy(todoItems = todoItems) } }
+            .onEach { todoItems -> dispatch(UpdateTodoItemsMsg(todoItems)) }
             .launchIn(scope)
     }
 
@@ -58,8 +40,8 @@ class MainViewModelImpl(
             when (intent) {
                 AddTodoItem ->
                     addUseCase.execute(state.value.text)
-                        .onSuccess { stateFlow.update { it.copy(text = "") } }
-                        .onFailure { sideEffectFlow.emit(EmptyAddText) }
+                        .onSuccess { dispatch(UpdateText(text = "")) }
+                        .onFailure { publish(EmptyAddText) }
 
                 is EditItem ->
                     getItemById(intent.itemId)
@@ -70,12 +52,12 @@ class MainViewModelImpl(
                     removeUseCase.execute(intent.itemId)
 
                 is TextChange ->
-                    stateFlow.update { it.copy(text = intent.text) }
+                    dispatch(UpdateText(text = intent.text))
 
                 is ClickItem ->
                     getItemById(intent.itemId)
                         ?.let(::ItemClick)
-                        ?.let { sideEffect -> sideEffectFlow.emit(sideEffect) }
+                        ?.let { sideEffect -> publish(sideEffect) }
                         ?: itemNotFound()
 
                 is SwitchDoneFlag ->
@@ -91,7 +73,7 @@ class MainViewModelImpl(
         scope.cancel()
     }
 
-    private suspend fun itemNotFound() = sideEffectFlow.emit(TodoItemNotFound)
+    private suspend fun itemNotFound() = publish(TodoItemNotFound)
 
     private fun getItemById(id: Long): TodoItem? = state.value.todoItems.find { it.id == id }
 }

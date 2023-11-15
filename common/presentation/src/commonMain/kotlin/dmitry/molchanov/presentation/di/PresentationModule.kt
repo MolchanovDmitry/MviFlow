@@ -1,18 +1,23 @@
 package dmitry.molchanov.presentation.di
 
-import dmitry.molchanov.presentation.details.DetailsViewModel
+import dmitry.molchanov.presentation.main.MainViewModelReducer
 import dmitry.molchanov.presentation.details.DetailsViewModelImpl
-import dmitry.molchanov.presentation.main.MainViewModel
+import dmitry.molchanov.presentation.details.DetailsViewModelReducer
 import dmitry.molchanov.presentation.main.MainViewModelImpl
 import org.koin.dsl.module
 
 val presentationModule = module {
 
-    factory<MainViewModel> { MainViewModelImpl(get(), get(), get(), get(), get()) }
+    factory { MainViewModelReducer() }
 
-    factory<DetailsViewModel> { params ->
+    factory { MainViewModelImpl(get(), get(), get(), get(), get(), get()) }
+
+    factory { DetailsViewModelReducer() }
+
+    factory { params ->
         DetailsViewModelImpl(
             itemId = params.get(),
+            reducer = get(),
             dispatchers = get(),
             getTodoItemsUseCase = get(),
             editTodoUseCase = get(),

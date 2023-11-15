@@ -22,8 +22,9 @@ val controllerModule = module {
 
     factory { params ->
         DetailsController(
-            detailsViewModel = params.fetchViewModel<DetailsVM>(),
+            detailsViewModel = params.fetchViewModel(),
             dispatchers = get(),
+
             detailsViewEventHandler = DetailsViewEventHandler(),
             lifecycleFetcher = params.get(),
             onItemDeleted = params.get(),

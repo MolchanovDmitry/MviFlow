@@ -1,4 +1,4 @@
-import dmitry.molchanov.presentation.main.MainViewModel
+import dmitry.molchanov.presentation.main.MainStore
 
 sealed class Event {
     data class ItemClicked(val id: Long) : Event()
@@ -8,7 +8,7 @@ sealed class Event {
     object AddClicked : Event()
 }
 
-class MainScreenEventHandler(private val vm: MainViewModel) {
+class MainScreenEventHandler(private val vm: MainStore) {
 
     fun handleAdd() = handle(Event.AddClicked)
     fun handleDone(id: Long)  = handle(Event.ItemDoneClicked(id))
@@ -17,11 +17,11 @@ class MainScreenEventHandler(private val vm: MainViewModel) {
 
     private fun handle(event: Event) {
         when (event) {
-            Event.AddClicked -> MainViewModel.AddTodoItem
-            is Event.ItemClicked -> MainViewModel.ClickItem(event.id)
-            is Event.ItemDeleteClicked -> MainViewModel.DeleteItem(event.id)
-            is Event.ItemDoneClicked -> MainViewModel.SwitchDoneFlag(event.id)
-            is Event.TextChanged -> MainViewModel.TextChange(event.text)
+            Event.AddClicked -> MainStore.AddTodoItem
+            is Event.ItemClicked -> MainStore.ClickItem(event.id)
+            is Event.ItemDeleteClicked -> MainStore.DeleteItem(event.id)
+            is Event.ItemDoneClicked -> MainStore.SwitchDoneFlag(event.id)
+            is Event.TextChanged -> MainStore.TextChange(event.text)
         }.let(vm::onIntent)
     }
 }

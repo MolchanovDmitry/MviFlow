@@ -5,11 +5,12 @@ import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.flowWithLifecycle
 import dmitry.molchanov.mvi.MviController
 import dmitry.molchanov.mvi.MviView
+import dmitry.molchanov.presentation.DetailsVM
 import dmitry.molchanov.presentation.details.DetailsView.Event
 import dmitry.molchanov.presentation.details.DetailsView.Model
-import dmitry.molchanov.presentation.details.DetailsViewModel
-import dmitry.molchanov.presentation.details.DetailsViewModel.Intent
-import dmitry.molchanov.presentation.details.DetailsViewModel.ItemState
+import dmitry.molchanov.presentation.details.DetailsStore
+import dmitry.molchanov.presentation.details.DetailsStore.Intent
+import dmitry.molchanov.presentation.details.DetailsStore.ItemState
 import dmitry.molchanov.util.Dispatchers
 import dmity.molchanov.mvi.LifecycleFetcher
 import dmity.molchanov.mvi.lifecycle
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.onEach
 
 class DetailsController(
     private val lifecycleFetcher: LifecycleFetcher,
-    private val detailsViewModel: DetailsViewModel,
+    private val detailsViewModel: DetailsVM,
     private val dispatchers: Dispatchers,
     private val onItemDeleted: () -> Unit,
     detailsViewEventHandler: DetailsViewEventHandler
@@ -33,7 +34,7 @@ class DetailsController(
         detailsViewModel.state
             .flowWithLifecycle(lifecycleFetcher.lifecycle, Lifecycle.State.STARTED)
             .onEach { state ->
-                if (state is DetailsViewModel.FinisState) {
+                if (state is DetailsStore.FinisState) {
                     onItemDeleted.invoke()
                 }
             }

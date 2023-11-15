@@ -2,7 +2,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.presentation.main.MainViewModel
+import dmitry.molchanov.presentation.main.MainStore
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
@@ -25,7 +25,7 @@ import org.w3c.dom.HTMLUListElement
 
 
 @Composable
-fun TodoMainUi(mainVM: MainViewModel) {
+fun TodoMainUi(mainVM: MainStore) {
     val state = mainVM.state.collectAsState()
     val eventHandler = remember { MainScreenEventHandler(mainVM) }
 

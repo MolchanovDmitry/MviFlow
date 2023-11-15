@@ -4,10 +4,9 @@ import dmitry.molchanov.database.di.jsDatabase
 import dmitry.molchanov.di.domainModule
 import dmitry.molchanov.model.util.di.jsDomainModule
 import dmitry.molchanov.presentation.di.presentationModule
-import dmitry.molchanov.presentation.main.MainViewModel
+import dmitry.molchanov.presentation.main.MainStore
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.dom.TextArea
 import org.koin.core.context.startKoin
 
 @Composable
@@ -35,7 +34,7 @@ fun TodoRootUi(/*component: TodoRoot*/) {
         }
     ) {
         val mainVM = remember {
-            koinApp.koin.get<MainViewModel>()
+            koinApp.koin.get<MainStore>()
         }
 
         Crossfade(

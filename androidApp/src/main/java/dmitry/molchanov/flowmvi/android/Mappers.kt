@@ -1,21 +1,21 @@
 package dmitry.molchanov.flowmvi.android
 
 import dmitry.molchanov.model.TodoItem
+import dmitry.molchanov.presentation.main.MainStore
 import dmitry.molchanov.presentation.main.MainView
-import dmitry.molchanov.presentation.main.MainViewModel
 
-val statesToModel: (MainViewModel.State) -> MainView.Model = { mainState ->
+val statesToModel: (MainStore.State) -> MainView.Model = { mainState ->
     MainView.Model(
         items = mainState.todoItems.map(TodoItem::mapToModelItem),
         text = mainState.text
     )
 }
 
-val sideEffectMapper: (MainViewModel.SideEffect) -> MainView.Effect? = { vmSideEffect ->
+val sideEffectMapper: (MainStore.SideEffect) -> MainView.Effect? = { vmSideEffect ->
     when (vmSideEffect) {
-        MainViewModel.EmptyAddText -> MainView.ShowEmptyMessage
-        MainViewModel.TodoItemNotFound -> MainView.ShowNotFoundMessage
-        is MainViewModel.ItemClick -> null
+        MainStore.EmptyAddText -> MainView.ShowEmptyMessage
+        MainStore.TodoItemNotFound -> MainView.ShowNotFoundMessage
+        is MainStore.ItemClick -> null
     }
 }
 

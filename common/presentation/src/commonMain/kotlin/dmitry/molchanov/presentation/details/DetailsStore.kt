@@ -1,11 +1,8 @@
 package dmitry.molchanov.presentation.details
 
 import dmitry.molchanov.model.TodoItem
-import dmitry.molchanov.mvi.MviViewModel
-import dmitry.molchanov.presentation.details.DetailsViewModel.Intent
-import dmitry.molchanov.presentation.details.DetailsViewModel.State
 
-interface DetailsViewModel: MviViewModel<State, Intent> {
+interface DetailsStore{
 
     sealed class State
     object EmptyState : State()
@@ -16,5 +13,9 @@ interface DetailsViewModel: MviViewModel<State, Intent> {
     object DeleteItem : Intent()
     object SwitchDoneFlag : Intent()
     class TextChange(val text: String) : Intent()
+
+    sealed class Message
+    object FinishMsg: Message()
+    class SetCurrentItemMsg(val todoItem: TodoItem):Message()
 
 }
